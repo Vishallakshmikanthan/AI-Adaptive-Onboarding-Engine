@@ -9,7 +9,7 @@ load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 primary_model = genai.GenerativeModel(
-    model_name="gemini-2.0-flash",
+    model_name="gemini-2.5-flash",
     generation_config=genai.GenerationConfig(
         temperature=0.1,
         max_output_tokens=2000,
@@ -18,7 +18,7 @@ primary_model = genai.GenerativeModel(
 )
 
 fallback_model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash",
+    model_name="gemini-2.0-flash-lite",
     generation_config=genai.GenerationConfig(
         temperature=0.1,
         max_output_tokens=2000,

@@ -1,0 +1,162 @@
+[
+  {
+    "id": "python-101",
+    "skill": "Python",
+    "title": "Introduction to Python",
+    "estimated_hours": 10,
+    "level": "beginner",
+    "prerequisites": []
+  },
+  {
+    "id": "python-201",
+    "skill": "Advanced Python",
+    "title": "Advanced Python Programming",
+    "estimated_hours": 15,
+    "level": "intermediate",
+    "prerequisites": ["python-101"]
+  },
+  {
+    "id": "sql-101",
+    "skill": "SQL",
+    "title": "SQL Fundamentals",
+    "estimated_hours": 8,
+    "level": "beginner",
+    "prerequisites": []
+  },
+  {
+    "id": "sql-201",
+    "skill": "Advanced SQL",
+    "title": "Advanced SQL and Query Optimization",
+    "estimated_hours": 12,
+    "level": "intermediate",
+    "prerequisites": ["sql-101"]
+  },
+  {
+    "id": "ml-101",
+    "skill": "Machine Learning",
+    "title": "Introduction to Machine Learning",
+    "estimated_hours": 20,
+    "level": "beginner",
+    "prerequisites": ["python-101"]
+  },
+  {
+    "id": "ml-201",
+    "skill": "Deep Learning",
+    "title": "Deep Learning Fundamentals",
+    "estimated_hours": 25,
+    "level": "intermediate",
+    "prerequisites": ["ml-101", "python-201"]
+  },
+  {
+    "id": "nlp-101",
+    "skill": "NLP",
+    "title": "Natural Language Processing",
+    "estimated_hours": 20,
+    "level": "intermediate",
+    "prerequisites": ["ml-101"]
+  },
+  {
+    "id": "data-viz-101",
+    "skill": "Data Visualization",
+    "title": "Data Visualization with Python",
+    "estimated_hours": 10,
+    "level": "beginner",
+    "prerequisites": ["python-101"]
+  },
+  {
+    "id": "stats-101",
+    "skill": "Statistics",
+    "title": "Statistics for Data Science",
+    "estimated_hours": 12,
+    "level": "beginner",
+    "prerequisites": []
+  },
+  {
+    "id": "docker-101",
+    "skill": "Docker",
+    "title": "Docker and Containerization",
+    "estimated_hours": 10,
+    "level": "beginner",
+    "prerequisites": []
+  },
+  {
+    "id": "kubernetes-101",
+    "skill": "Kubernetes",
+    "title": "Kubernetes Orchestration",
+    "estimated_hours": 15,
+    "level": "intermediate",
+    "prerequisites": ["docker-101"]
+  },
+  {
+    "id": "git-101",
+    "skill": "Git",
+    "title": "Version Control with Git",
+    "estimated_hours": 6,
+    "level": "beginner",
+    "prerequisites": []
+  },
+  {
+    "id": "cloud-101",
+    "skill": "Cloud Computing",
+    "title": "Cloud Computing Fundamentals (AWS)",
+    "estimated_hours": 15,
+    "level": "beginner",
+    "prerequisites": []
+  },
+  {
+    "id": "cloud-201",
+    "skill": "Cloud Architecture",
+    "title": "Cloud Architecture and Design",
+    "estimated_hours": 20,
+    "level": "intermediate",
+    "prerequisites": ["cloud-101", "docker-101"]
+  },
+  {
+    "id": "api-101",
+    "skill": "REST APIs",
+    "title": "Building REST APIs",
+    "estimated_hours": 12,
+    "level": "beginner",
+    "prerequisites": ["python-101"]
+  },
+  {
+    "id": "fastapi-101",
+    "skill": "FastAPI",
+    "title": "Web Development with FastAPI",
+    "estimated_hours": 10,
+    "level": "intermediate",
+    "prerequisites": ["api-101", "python-201"]
+  },
+  {
+    "id": "react-101",
+    "skill": "React",
+    "title": "Frontend Development with React",
+    "estimated_hours": 15,
+    "level": "beginner",
+    "prerequisites": []
+  },
+  {
+    "id": "tensorflow-101",
+    "skill": "TensorFlow",
+    "title": "TensorFlow for Deep Learning",
+    "estimated_hours": 20,
+    "level": "intermediate",
+    "prerequisites": ["ml-201"]
+  },
+  {
+    "id": "pandas-101",
+    "skill": "Pandas",
+    "title": "Data Analysis with Pandas",
+    "estimated_hours": 10,
+    "level": "beginner",
+    "prerequisites": ["python-101"]
+  },
+  {
+    "id": "ci-cd-101",
+    "skill": "CI/CD",
+    "title": "Continuous Integration and Deployment",
+    "estimated_hours": 10,
+    "level": "intermediate",
+    "prerequisites": ["git-101", "docker-101"]
+  }
+]
