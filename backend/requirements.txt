@@ -3,7 +3,7 @@ uvicorn
 python-multipart
 PyMuPDF
 python-docx
-google-generativeai
+openai
 sentence-transformers
 networkx
 numpy

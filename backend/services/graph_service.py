@@ -46,16 +46,17 @@ def generate_adaptive_pathway(
         if course.get("skill", "").lower() in known_skill_names:
             known_course_ids.add(course["id"])
 
-    # Step 3: Identify target courses from gap_skills and map gap scores
-    gap_score_map: Dict[str, float] = {}
+    # Step 3: Identify target courses from gap_skills and build gap_map
+    # Key: course_id → gap_severity (sourced from catalog_skill matching)
+    gap_map: Dict[str, float] = {}
     target_course_ids = set()
     for gap in gap_skills:
-        gap_name = gap["skill"].lower()
-        gap_score = gap.get("gap_score", 0.5)
+        catalog_skill = gap.get("catalog_skill", gap.get("skill", "")).lower()
+        gap_severity = float(gap.get("gap_severity", 0.0))
         for course in catalog:
-            if course.get("skill", "").lower() == gap_name:
+            if course.get("skill", "").lower() == catalog_skill:
                 target_course_ids.add(course["id"])
-                gap_score_map[course["id"]] = gap_score
+                gap_map[course["id"]] = gap_severity
                 break
 
     # Step 4: Collect all required courses (targets + their prerequisite chains)
@@ -69,7 +70,7 @@ def generate_adaptive_pathway(
     courses_skipped = len(required_ids & known_course_ids)
     required_ids -= known_course_ids
 
-    # Step 6: Topologically sort remaining courses
+    # Step 6: Topologically sort remaining courses (deterministic order)
     subgraph = G.subgraph(required_ids)
     sorted_ids = list(nx.topological_sort(subgraph))
 
@@ -86,13 +87,13 @@ def generate_adaptive_pathway(
             break
 
         pathway.append({
-            "order": order,
-            "course_id": course_id,
+            "id": course_id,
             "skill": node.get("skill", ""),
-            "title": node.get("title", ""),
-            "estimated_hours": hours,
+            "display_name": node.get("title", ""),
             "level": node.get("level", "beginner"),
-            "gap_relevance": gap_score_map.get(course_id, 0.0),
+            "estimated_hours": hours,
+            "order": order,
+            "gap_relevance": gap_map.get(course_id, 0.0),
         })
 
         total_hours += hours

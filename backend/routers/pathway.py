@@ -1,7 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import json
 import os
+import traceback
 
 from services.llm_service import extract_skills_and_gaps
 from services.embed_service import compute_gap_scores
@@ -26,7 +27,8 @@ class AnalyzeRequest(BaseModel):
 def _normalize_gap(gap: dict, source: str) -> dict:
     """Normalize a gap entry to a consistent format."""
     skill = gap.get("skill", "")
-    catalog_skill = gap.get("catalog_skill", skill)
+    # semantic gaps use 'skill' only; LLM gaps may have 'catalog_skill'
+    catalog_skill = gap.get("catalog_skill") or skill
     severity = float(gap.get("gap_severity", gap.get("gap_score", 0.5)))
     severity = max(0.0, min(1.0, severity))
     priority = gap.get("priority", "high" if severity > 0.6 else "medium")
@@ -59,45 +61,55 @@ def _merge_gaps(llm_gaps: list, semantic_gaps: list) -> list:
 
 @router.post("/analyze")
 async def analyze(request: AnalyzeRequest):
-    # Step 1 — Load catalog
-    catalog = load_catalog()
+    try:
+        # Step 1 — Load catalog
+        catalog = load_catalog()
 
-    # Step 2 — LLM extraction
-    llm_result = extract_skills_and_gaps(
-        request.resume_text,
-        request.jd_text,
-        catalog,
-    )
+        # Step 2 — LLM extraction
+        llm_result = extract_skills_and_gaps(
+            request.resume_text,
+            request.jd_text,
+            catalog,
+        )
 
-    # Step 3 — Semantic gap scoring
-    semantic_gaps = compute_gap_scores(
-        llm_result.get("resume_skills", []),
-        llm_result.get("jd_required_skills", []),
-    )
+        resume_skills = llm_result.get("resume_skills") or []
+        jd_skills = llm_result.get("jd_required_skills") or []
+        skill_gaps_raw = llm_result.get("skill_gaps") or []
 
-    # Step 4 — Merge and deduplicate gaps
-    final_gaps = _merge_gaps(
-        llm_result.get("skill_gaps", []),
-        semantic_gaps,
-    )
+        # Step 3 — Semantic gap scoring (only if both lists are non-empty)
+        semantic_gaps = []
+        if resume_skills and jd_skills:
+            semantic_gaps = compute_gap_scores(resume_skills, jd_skills)
 
-    # Step 5 — Extract known skills
-    known_skills = [s.get("skill", "") for s in llm_result.get("resume_skills", [])]
+        # Step 4 — Merge and deduplicate gaps
+        final_gaps = _merge_gaps(skill_gaps_raw, semantic_gaps)
 
-    # Step 6 — Generate pathway
-    pathway_result = generate_adaptive_pathway(
-        final_gaps,
-        known_skills,
-        catalog,
-        request.max_hours,
-    )
+        # Step 5 — Extract known skills
+        known_skills = [s.get("skill", "") for s in resume_skills]
 
-    # Step 7 — Return response
-    return {
-        "resume_skills": llm_result.get("resume_skills", []),
-        "jd_required_skills": llm_result.get("jd_required_skills", []),
-        "skill_gaps": final_gaps,
-        "pathway": pathway_result,
-        "reasoning_trace": llm_result.get("reasoning_trace", ""),
-        "match_score": llm_result.get("match_score", 0),
-    }
+        # Step 6 — Generate pathway
+        pathway_result = generate_adaptive_pathway(
+            final_gaps,
+            known_skills,
+            catalog,
+            request.max_hours,
+        )
+
+        # Step 7 — Return response
+        return {
+            "resume_skills": resume_skills,
+            "jd_required_skills": jd_skills,
+            "skill_gaps": final_gaps,
+            "pathway": pathway_result,
+            "reasoning_trace": llm_result.get("reasoning_trace", ""),
+            "match_score": llm_result.get("match_score", 0),
+        }
+
+    except RuntimeError as e:
+        # LLM / Gemini failures
+        raise HTTPException(status_code=503, detail=f"AI service error: {str(e)}")
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=500, detail=f"Catalog not found: {str(e)}")
+    except Exception as e:
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Internal error: {str(e)}")
