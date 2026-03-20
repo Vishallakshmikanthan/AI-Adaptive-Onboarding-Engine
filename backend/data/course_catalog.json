@@ -1,162 +1,1247 @@
 [
   {
-    "id": "python-101",
-    "skill": "Python",
-    "title": "Introduction to Python",
-    "estimated_hours": 10,
+    "id": "python-programming",
+    "skill": "Python Programming",
+    "display_name": "Python Programming",
     "level": "beginner",
-    "prerequisites": []
+    "prerequisites": [],
+    "estimated_hours": 10,
+    "category": "programming",
+    "description": "Learn the fundamentals of Python including variables, data types, control flow, functions, and basic OOP.",
+    "resources": [
+      {
+        "name": "Python Official Tutorial",
+        "url": "https://docs.python.org/3/tutorial/"
+      },
+      {
+        "name": "Automate the Boring Stuff",
+        "url": "https://automatetheboringstuff.com/"
+      },
+      {
+        "name": "freeCodeCamp Python",
+        "url": "https://www.freecodecamp.org/learn/scientific-computing-with-python/"
+      }
+    ]
   },
   {
-    "id": "python-201",
-    "skill": "Advanced Python",
-    "title": "Advanced Python Programming",
+    "id": "python-advanced",
+    "skill": "Python Advanced",
+    "display_name": "Advanced Python Programming",
+    "level": "intermediate",
+    "prerequisites": [
+      "python-programming"
+    ],
     "estimated_hours": 15,
-    "level": "intermediate",
-    "prerequisites": ["python-101"]
+    "category": "programming",
+    "description": "Master advanced Python concepts including decorators, generators, context managers, metaclasses, and async programming.",
+    "resources": [
+      {
+        "name": "Real Python Advanced Tutorials",
+        "url": "https://realpython.com/tutorials/advanced/"
+      },
+      {
+        "name": "Fluent Python Book",
+        "url": "https://www.oreilly.com/library/view/fluent-python-2nd/9781492056348/"
+      },
+      {
+        "name": "Corey Schafer Python Tutorials",
+        "url": "https://www.youtube.com/playlist?list=PL-osiE80TeTt2d9bfVyTiXJA-UTHn6WwU"
+      }
+    ]
   },
   {
-    "id": "sql-101",
-    "skill": "SQL",
-    "title": "SQL Fundamentals",
-    "estimated_hours": 8,
+    "id": "javascript",
+    "skill": "JavaScript",
+    "display_name": "JavaScript Essentials",
     "level": "beginner",
-    "prerequisites": []
-  },
-  {
-    "id": "sql-201",
-    "skill": "Advanced SQL",
-    "title": "Advanced SQL and Query Optimization",
+    "prerequisites": [],
     "estimated_hours": 12,
+    "category": "programming",
+    "description": "Learn core JavaScript including ES6+ syntax, DOM manipulation, async/await, and event handling.",
+    "resources": [
+      {
+        "name": "MDN JavaScript Guide",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide"
+      },
+      {
+        "name": "JavaScript.info",
+        "url": "https://javascript.info/"
+      },
+      {
+        "name": "freeCodeCamp JavaScript",
+        "url": "https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/"
+      }
+    ]
+  },
+  {
+    "id": "typescript",
+    "skill": "TypeScript",
+    "display_name": "TypeScript Fundamentals",
     "level": "intermediate",
-    "prerequisites": ["sql-101"]
-  },
-  {
-    "id": "ml-101",
-    "skill": "Machine Learning",
-    "title": "Introduction to Machine Learning",
-    "estimated_hours": 20,
-    "level": "beginner",
-    "prerequisites": ["python-101"]
-  },
-  {
-    "id": "ml-201",
-    "skill": "Deep Learning",
-    "title": "Deep Learning Fundamentals",
-    "estimated_hours": 25,
-    "level": "intermediate",
-    "prerequisites": ["ml-101", "python-201"]
-  },
-  {
-    "id": "nlp-101",
-    "skill": "NLP",
-    "title": "Natural Language Processing",
-    "estimated_hours": 20,
-    "level": "intermediate",
-    "prerequisites": ["ml-101"]
-  },
-  {
-    "id": "data-viz-101",
-    "skill": "Data Visualization",
-    "title": "Data Visualization with Python",
+    "prerequisites": [
+      "javascript"
+    ],
     "estimated_hours": 10,
-    "level": "beginner",
-    "prerequisites": ["python-101"]
+    "category": "programming",
+    "description": "Learn TypeScript type system, interfaces, generics, enums, and integration with modern frameworks.",
+    "resources": [
+      {
+        "name": "TypeScript Handbook",
+        "url": "https://www.typescriptlang.org/docs/handbook/"
+      },
+      {
+        "name": "TypeScript Deep Dive",
+        "url": "https://basarat.gitbook.io/typescript/"
+      },
+      {
+        "name": "Total TypeScript",
+        "url": "https://www.totaltypescript.com/"
+      }
+    ]
   },
   {
-    "id": "stats-101",
-    "skill": "Statistics",
-    "title": "Statistics for Data Science",
-    "estimated_hours": 12,
-    "level": "beginner",
-    "prerequisites": []
-  },
-  {
-    "id": "docker-101",
-    "skill": "Docker",
-    "title": "Docker and Containerization",
-    "estimated_hours": 10,
-    "level": "beginner",
-    "prerequisites": []
-  },
-  {
-    "id": "kubernetes-101",
-    "skill": "Kubernetes",
-    "title": "Kubernetes Orchestration",
-    "estimated_hours": 15,
-    "level": "intermediate",
-    "prerequisites": ["docker-101"]
-  },
-  {
-    "id": "git-101",
-    "skill": "Git",
-    "title": "Version Control with Git",
-    "estimated_hours": 6,
-    "level": "beginner",
-    "prerequisites": []
-  },
-  {
-    "id": "cloud-101",
-    "skill": "Cloud Computing",
-    "title": "Cloud Computing Fundamentals (AWS)",
-    "estimated_hours": 15,
-    "level": "beginner",
-    "prerequisites": []
-  },
-  {
-    "id": "cloud-201",
-    "skill": "Cloud Architecture",
-    "title": "Cloud Architecture and Design",
-    "estimated_hours": 20,
-    "level": "intermediate",
-    "prerequisites": ["cloud-101", "docker-101"]
-  },
-  {
-    "id": "api-101",
-    "skill": "REST APIs",
-    "title": "Building REST APIs",
-    "estimated_hours": 12,
-    "level": "beginner",
-    "prerequisites": ["python-101"]
-  },
-  {
-    "id": "fastapi-101",
-    "skill": "FastAPI",
-    "title": "Web Development with FastAPI",
-    "estimated_hours": 10,
-    "level": "intermediate",
-    "prerequisites": ["api-101", "python-201"]
-  },
-  {
-    "id": "react-101",
+    "id": "react",
     "skill": "React",
-    "title": "Frontend Development with React",
+    "display_name": "React Development",
+    "level": "intermediate",
+    "prerequisites": [
+      "javascript"
+    ],
     "estimated_hours": 15,
-    "level": "beginner",
-    "prerequisites": []
+    "category": "programming",
+    "description": "Build modern UIs with React including hooks, state management, component patterns, and routing.",
+    "resources": [
+      {
+        "name": "React Official Docs",
+        "url": "https://react.dev/learn"
+      },
+      {
+        "name": "React Tutorial",
+        "url": "https://react.dev/learn/tutorial-tic-tac-toe"
+      },
+      {
+        "name": "Epic React",
+        "url": "https://epicreact.dev/"
+      }
+    ]
   },
   {
-    "id": "tensorflow-101",
-    "skill": "TensorFlow",
-    "title": "TensorFlow for Deep Learning",
+    "id": "nodejs",
+    "skill": "Node.js",
+    "display_name": "Node.js Backend Development",
+    "level": "intermediate",
+    "prerequisites": [
+      "javascript"
+    ],
+    "estimated_hours": 14,
+    "category": "programming",
+    "description": "Build server-side applications with Node.js including Express, middleware, REST APIs, and database integration.",
+    "resources": [
+      {
+        "name": "Node.js Official Docs",
+        "url": "https://nodejs.org/en/docs/guides"
+      },
+      {
+        "name": "NodeSchool",
+        "url": "https://nodeschool.io/"
+      },
+      {
+        "name": "Node.js Crash Course",
+        "url": "https://www.youtube.com/watch?v=fBNz5xF-Kx4"
+      }
+    ]
+  },
+  {
+    "id": "java",
+    "skill": "Java",
+    "display_name": "Java Programming",
+    "level": "beginner",
+    "prerequisites": [],
+    "estimated_hours": 16,
+    "category": "programming",
+    "description": "Learn Java fundamentals including OOP principles, collections, exception handling, and basic I/O.",
+    "resources": [
+      {
+        "name": "Oracle Java Tutorials",
+        "url": "https://docs.oracle.com/javase/tutorial/"
+      },
+      {
+        "name": "Codecademy Java",
+        "url": "https://www.codecademy.com/learn/learn-java"
+      },
+      {
+        "name": "Java Brains",
+        "url": "https://javabrains.io/"
+      }
+    ]
+  },
+  {
+    "id": "sql",
+    "skill": "SQL",
+    "display_name": "SQL Fundamentals",
+    "level": "beginner",
+    "prerequisites": [],
+    "estimated_hours": 8,
+    "category": "data",
+    "description": "Learn SQL basics including SELECT, JOIN, GROUP BY, subqueries, and database design fundamentals.",
+    "resources": [
+      {
+        "name": "SQLBolt",
+        "url": "https://sqlbolt.com/"
+      },
+      {
+        "name": "W3Schools SQL",
+        "url": "https://www.w3schools.com/sql/"
+      },
+      {
+        "name": "Mode SQL Tutorial",
+        "url": "https://mode.com/sql-tutorial/"
+      }
+    ]
+  },
+  {
+    "id": "sql-advanced",
+    "skill": "SQL Advanced",
+    "display_name": "Advanced SQL & Query Optimization",
+    "level": "intermediate",
+    "prerequisites": [
+      "sql"
+    ],
+    "estimated_hours": 12,
+    "category": "data",
+    "description": "Master advanced SQL including window functions, CTEs, query optimization, indexing strategies, and stored procedures.",
+    "resources": [
+      {
+        "name": "Use The Index Luke",
+        "url": "https://use-the-index-luke.com/"
+      },
+      {
+        "name": "PostgreSQL Documentation",
+        "url": "https://www.postgresql.org/docs/current/sql.html"
+      },
+      {
+        "name": "StrataScratch SQL",
+        "url": "https://www.stratascratch.com/"
+      }
+    ]
+  },
+  {
+    "id": "statistics",
+    "skill": "Statistics",
+    "display_name": "Statistics for Data Science",
+    "level": "beginner",
+    "prerequisites": [],
+    "estimated_hours": 12,
+    "category": "data",
+    "description": "Learn descriptive and inferential statistics, probability, hypothesis testing, and distributions.",
+    "resources": [
+      {
+        "name": "Khan Academy Statistics",
+        "url": "https://www.khanacademy.org/math/statistics-probability"
+      },
+      {
+        "name": "Think Stats",
+        "url": "https://greenteapress.com/thinkstats2/html/"
+      },
+      {
+        "name": "StatQuest with Josh Starmer",
+        "url": "https://statquest.org/"
+      }
+    ]
+  },
+  {
+    "id": "data-analysis",
+    "skill": "Data Analysis",
+    "display_name": "Data Analysis with Python",
+    "level": "intermediate",
+    "prerequisites": [
+      "python-programming",
+      "statistics"
+    ],
+    "estimated_hours": 14,
+    "category": "data",
+    "description": "Perform data analysis using pandas, NumPy, and Jupyter notebooks for data wrangling and exploration.",
+    "resources": [
+      {
+        "name": "Kaggle Data Analysis",
+        "url": "https://www.kaggle.com/learn/pandas"
+      },
+      {
+        "name": "Python Data Science Handbook",
+        "url": "https://jakevdp.github.io/PythonDataScienceHandbook/"
+      },
+      {
+        "name": "DataCamp Data Analysis",
+        "url": "https://www.datacamp.com/"
+      }
+    ]
+  },
+  {
+    "id": "data-visualization",
+    "skill": "Data Visualization",
+    "display_name": "Data Visualization",
+    "level": "intermediate",
+    "prerequisites": [
+      "python-programming",
+      "statistics"
+    ],
+    "estimated_hours": 10,
+    "category": "data",
+    "description": "Create compelling visualizations using matplotlib, seaborn, and plotly for effective data storytelling.",
+    "resources": [
+      {
+        "name": "Matplotlib Tutorials",
+        "url": "https://matplotlib.org/stable/tutorials/index.html"
+      },
+      {
+        "name": "Seaborn Tutorial",
+        "url": "https://seaborn.pydata.org/tutorial.html"
+      },
+      {
+        "name": "Towards Data Science: Visualization",
+        "url": "https://towardsdatascience.com/data-visualization/home"
+      }
+    ]
+  },
+  {
+    "id": "machine-learning",
+    "skill": "Machine Learning",
+    "display_name": "Machine Learning Fundamentals",
+    "level": "intermediate",
+    "prerequisites": [
+      "python-programming",
+      "statistics"
+    ],
     "estimated_hours": 20,
-    "level": "intermediate",
-    "prerequisites": ["ml-201"]
+    "category": "data",
+    "description": "Learn supervised and unsupervised ML algorithms, model evaluation, feature engineering, and scikit-learn.",
+    "resources": [
+      {
+        "name": "Google ML Crash Course",
+        "url": "https://developers.google.com/machine-learning/crash-course"
+      },
+      {
+        "name": "Scikit-learn Tutorials",
+        "url": "https://scikit-learn.org/stable/tutorial/"
+      },
+      {
+        "name": "fast.ai Machine Learning",
+        "url": "https://course.fast.ai/"
+      }
+    ]
   },
   {
-    "id": "pandas-101",
-    "skill": "Pandas",
-    "title": "Data Analysis with Pandas",
-    "estimated_hours": 10,
+    "id": "deep-learning",
+    "skill": "Deep Learning",
+    "display_name": "Deep Learning",
+    "level": "advanced",
+    "prerequisites": [
+      "machine-learning"
+    ],
+    "estimated_hours": 25,
+    "category": "data",
+    "description": "Master neural networks, CNNs, RNNs, transformers, and deep learning frameworks like TensorFlow and PyTorch.",
+    "resources": [
+      {
+        "name": "Deep Learning Specialization",
+        "url": "https://www.deeplearning.ai/courses/deep-learning-specialization/"
+      },
+      {
+        "name": "Fast.ai",
+        "url": "https://course.fast.ai/"
+      },
+      {
+        "name": "Kaggle Deep Learning",
+        "url": "https://www.kaggle.com/learn/intro-to-deep-learning"
+      }
+    ]
+  },
+  {
+    "id": "nlp",
+    "skill": "NLP",
+    "display_name": "Natural Language Processing",
+    "level": "advanced",
+    "prerequisites": [
+      "machine-learning"
+    ],
+    "estimated_hours": 20,
+    "category": "data",
+    "description": "Learn text processing, sentiment analysis, named entity recognition, transformers, and LLM fundamentals.",
+    "resources": [
+      {
+        "name": "Hugging Face NLP Course",
+        "url": "https://huggingface.co/learn/nlp-course"
+      },
+      {
+        "name": "Stanford CS224N",
+        "url": "https://web.stanford.edu/class/cs224n/"
+      },
+      {
+        "name": "Spacy Documentation",
+        "url": "https://spacy.io/"
+      }
+    ]
+  },
+  {
+    "id": "data-engineering",
+    "skill": "Data Engineering",
+    "display_name": "Data Engineering",
+    "level": "advanced",
+    "prerequisites": [
+      "sql-advanced",
+      "python-advanced"
+    ],
+    "estimated_hours": 22,
+    "category": "data",
+    "description": "Design and build data pipelines, ETL processes, data warehouses, and work with tools like Airflow and Spark.",
+    "resources": [
+      {
+        "name": "Data Engineering Zoomcamp",
+        "url": "https://github.com/DataTalksClub/data-engineering-zoomcamp"
+      },
+      {
+        "name": "Apache Spark Docs",
+        "url": "https://spark.apache.org/docs/latest/"
+      },
+      {
+        "name": "Data Engineer Roadmap",
+        "url": "https://roadmap.sh/data-engineer"
+      }
+    ]
+  },
+  {
+    "id": "docker",
+    "skill": "Docker",
+    "display_name": "Docker & Containerization",
     "level": "beginner",
-    "prerequisites": ["python-101"]
+    "prerequisites": [],
+    "estimated_hours": 10,
+    "category": "cloud",
+    "description": "Learn container fundamentals, Dockerfiles, image management, volumes, networking, and Docker Compose.",
+    "resources": [
+      {
+        "name": "Docker Getting Started",
+        "url": "https://docs.docker.com/get-started/"
+      },
+      {
+        "name": "Docker Curriculum",
+        "url": "https://docker-curriculum.com/"
+      },
+      {
+        "name": "TechWorld with Nana Docker",
+        "url": "https://www.youtube.com/watch?v=3c-iBn73dDE"
+      }
+    ]
   },
   {
-    "id": "ci-cd-101",
-    "skill": "CI/CD",
-    "title": "Continuous Integration and Deployment",
-    "estimated_hours": 10,
+    "id": "kubernetes",
+    "skill": "Kubernetes",
+    "display_name": "Kubernetes Orchestration",
     "level": "intermediate",
-    "prerequisites": ["git-101", "docker-101"]
+    "prerequisites": [
+      "docker"
+    ],
+    "estimated_hours": 16,
+    "category": "cloud",
+    "description": "Master container orchestration with pods, services, deployments, ConfigMaps, and Helm charts.",
+    "resources": [
+      {
+        "name": "Kubernetes Official Docs",
+        "url": "https://kubernetes.io/docs/tutorials/"
+      },
+      {
+        "name": "KodeKloud Kubernetes",
+        "url": "https://kodekloud.com/courses/kubernetes-for-the-absolute-beginners/"
+      },
+      {
+        "name": "Kubernetes The Hard Way",
+        "url": "https://github.com/kelseyhightower/kubernetes-the-hard-way"
+      }
+    ]
+  },
+  {
+    "id": "aws",
+    "skill": "AWS",
+    "display_name": "Amazon Web Services",
+    "level": "beginner",
+    "prerequisites": [],
+    "estimated_hours": 15,
+    "category": "cloud",
+    "description": "Learn core AWS services including EC2, S3, RDS, Lambda, IAM, and VPC fundamentals.",
+    "resources": [
+      {
+        "name": "AWS Free Tier",
+        "url": "https://aws.amazon.com/free/"
+      },
+      {
+        "name": "AWS Skill Builder",
+        "url": "https://skillbuilder.aws/"
+      },
+      {
+        "name": "A Cloud Guru AWS",
+        "url": "https://acloudguru.com/"
+      }
+    ]
+  },
+  {
+    "id": "azure",
+    "skill": "Azure",
+    "display_name": "Microsoft Azure Fundamentals",
+    "level": "beginner",
+    "prerequisites": [],
+    "estimated_hours": 14,
+    "category": "cloud",
+    "description": "Learn Azure core services, resource management, virtual machines, storage accounts, and Azure AD.",
+    "resources": [
+      {
+        "name": "Microsoft Learn Azure",
+        "url": "https://learn.microsoft.com/en-us/training/azure/"
+      },
+      {
+        "name": "AZ-900 Study Guide",
+        "url": "https://learn.microsoft.com/en-us/certifications/azure-fundamentals/"
+      },
+      {
+        "name": "Azure Friday",
+        "url": "https://azure.microsoft.com/en-us/resources/videos/azure-friday/"
+      }
+    ]
+  },
+  {
+    "id": "google-cloud-platform",
+    "skill": "Google Cloud Platform",
+    "display_name": "Google Cloud Platform",
+    "level": "beginner",
+    "prerequisites": [],
+    "estimated_hours": 14,
+    "category": "cloud",
+    "description": "Learn GCP services including Compute Engine, Cloud Storage, BigQuery, and Cloud Functions.",
+    "resources": [
+      {
+        "name": "Google Cloud Training",
+        "url": "https://cloud.google.com/training"
+      },
+      {
+        "name": "Qwiklabs",
+        "url": "https://www.cloudskillsboost.google/"
+      },
+      {
+        "name": "GCP YouTube Channel",
+        "url": "https://www.youtube.com/user/googlecloudplatform"
+      }
+    ]
+  },
+  {
+    "id": "ci-cd",
+    "skill": "CI/CD",
+    "display_name": "CI/CD Pipelines",
+    "level": "intermediate",
+    "prerequisites": [
+      "git",
+      "docker"
+    ],
+    "estimated_hours": 10,
+    "category": "cloud",
+    "description": "Set up continuous integration and deployment pipelines using GitHub Actions, Jenkins, or GitLab CI.",
+    "resources": [
+      {
+        "name": "GitHub Actions Docs",
+        "url": "https://docs.github.com/en/actions"
+      },
+      {
+        "name": "Jenkins User Documentation",
+        "url": "https://www.jenkins.io/doc/"
+      },
+      {
+        "name": "GitLab CI/CD Docs",
+        "url": "https://docs.gitlab.com/ee/ci/"
+      }
+    ]
+  },
+  {
+    "id": "devops",
+    "skill": "DevOps",
+    "display_name": "DevOps Practices",
+    "level": "advanced",
+    "prerequisites": [
+      "ci-cd",
+      "kubernetes"
+    ],
+    "estimated_hours": 20,
+    "category": "cloud",
+    "description": "Master DevOps culture, infrastructure as code, monitoring, logging, and site reliability engineering principles.",
+    "resources": [
+      {
+        "name": "The DevOps Handbook",
+        "url": "https://itrevolution.com/the-devops-handbook/"
+      },
+      {
+        "name": "DevOps Roadmap",
+        "url": "https://roadmap.sh/devops"
+      },
+      {
+        "name": "DevOps Directive",
+        "url": "https://devopsdirective.com/"
+      }
+    ]
+  },
+  {
+    "id": "cloud-security",
+    "skill": "Cloud Security",
+    "display_name": "Cloud Security",
+    "level": "advanced",
+    "prerequisites": [
+      "aws",
+      "cybersecurity"
+    ],
+    "estimated_hours": 16,
+    "category": "cloud",
+    "description": "Learn cloud security best practices including IAM policies, encryption, network security, and compliance frameworks.",
+    "resources": [
+      {
+        "name": "AWS Security Best Practices",
+        "url": "https://docs.aws.amazon.com/security/"
+      },
+      {
+        "name": "Cloud Security Alliance",
+        "url": "https://cloudsecurityalliance.org/research/guidance/"
+      },
+      {
+        "name": "SANS Cloud Security",
+        "url": "https://www.sans.org/cloud-security/"
+      }
+    ]
+  },
+  {
+    "id": "git",
+    "skill": "Git",
+    "display_name": "Git Version Control",
+    "level": "beginner",
+    "prerequisites": [],
+    "estimated_hours": 6,
+    "category": "fundamentals",
+    "description": "Learn version control with Git including branching, merging, rebasing, pull requests, and collaboration workflows.",
+    "resources": [
+      {
+        "name": "Pro Git Book",
+        "url": "https://git-scm.com/book/en/v2"
+      },
+      {
+        "name": "Learn Git Branching",
+        "url": "https://learngitbranching.js.org/"
+      },
+      {
+        "name": "Atlassian Git Tutorial",
+        "url": "https://www.atlassian.com/git/tutorials"
+      }
+    ]
+  },
+  {
+    "id": "linux",
+    "skill": "Linux",
+    "display_name": "Linux Administration",
+    "level": "beginner",
+    "prerequisites": [],
+    "estimated_hours": 12,
+    "category": "fundamentals",
+    "description": "Learn Linux command line, file system, permissions, process management, shell scripting, and basic administration.",
+    "resources": [
+      {
+        "name": "Linux Journey",
+        "url": "https://linuxjourney.com/"
+      },
+      {
+        "name": "The Linux Command Line",
+        "url": "https://linuxcommand.org/tlcl.php"
+      },
+      {
+        "name": "Linux Foundation Free Courses",
+        "url": "https://training.linuxfoundation.org/resources/?_format=free-course"
+      }
+    ]
+  },
+  {
+    "id": "computer-networking",
+    "skill": "Computer Networking",
+    "display_name": "Computer Networking",
+    "level": "beginner",
+    "prerequisites": [],
+    "estimated_hours": 14,
+    "category": "fundamentals",
+    "description": "Understand TCP/IP, DNS, HTTP, firewalls, subnetting, OSI model, and network troubleshooting fundamentals.",
+    "resources": [
+      {
+        "name": "Computer Networking: A Top-Down Approach",
+        "url": "https://gaia.cs.umass.edu/kurose_ross/online_lectures.htm"
+      },
+      {
+        "name": "Cisco Networking Basics",
+        "url": "https://www.netacad.com/courses/networking"
+      },
+      {
+        "name": "NetworkChuck Networking Basics",
+        "url": "https://www.youtube.com/playlist?list=PLIhvC56v63IJVXv0GJcl9vO5Z6znCVb1P"
+      }
+    ]
+  },
+  {
+    "id": "microsoft-excel",
+    "skill": "Microsoft Excel",
+    "display_name": "Microsoft Excel",
+    "level": "beginner",
+    "prerequisites": [],
+    "estimated_hours": 8,
+    "category": "fundamentals",
+    "description": "Master Excel including formulas, pivot tables, VLOOKUP, conditional formatting, charts, and data analysis tools.",
+    "resources": [
+      {
+        "name": "Excel Easy Tutorials",
+        "url": "https://www.excel-easy.com/"
+      },
+      {
+        "name": "Microsoft Excel Training",
+        "url": "https://support.microsoft.com/en-us/excel"
+      },
+      {
+        "name": "Excel for Windows Training",
+        "url": "https://support.microsoft.com/en-us/training"
+      }
+    ]
+  },
+  {
+    "id": "problem-solving",
+    "skill": "Problem Solving",
+    "display_name": "Problem Solving & Critical Thinking",
+    "level": "beginner",
+    "prerequisites": [],
+    "estimated_hours": 8,
+    "category": "fundamentals",
+    "description": "Develop analytical thinking, structured problem-solving frameworks, root cause analysis, and decision-making skills.",
+    "resources": [
+      {
+        "name": "Coursera Problem Solving",
+        "url": "https://www.coursera.org/learn/problem-solving"
+      },
+      {
+        "name": "MindTools",
+        "url": "https://www.mindtools.com/"
+      },
+      {
+        "name": "Brilliant.org",
+        "url": "https://brilliant.org/"
+      }
+    ]
+  },
+  {
+    "id": "cybersecurity",
+    "skill": "Cybersecurity",
+    "display_name": "Cybersecurity Fundamentals",
+    "level": "intermediate",
+    "prerequisites": [
+      "computer-networking",
+      "linux"
+    ],
+    "estimated_hours": 16,
+    "category": "fundamentals",
+    "description": "Learn security fundamentals including threat modeling, encryption, authentication, vulnerability assessment, and OWASP.",
+    "resources": [
+      {
+        "name": "Cybrary Free Training",
+        "url": "https://www.cybrary.it/"
+      },
+      {
+        "name": "OWASP Top Ten",
+        "url": "https://owasp.org/www-project-top-ten/"
+      },
+      {
+        "name": "TryHackMe",
+        "url": "https://tryhackme.com/"
+      }
+    ]
+  },
+  {
+    "id": "system-design",
+    "skill": "System Design",
+    "display_name": "System Design",
+    "level": "advanced",
+    "prerequisites": [
+      "rest-api-design",
+      "database-design"
+    ],
+    "estimated_hours": 20,
+    "category": "programming",
+    "description": "Design scalable distributed systems covering load balancing, caching, sharding, message queues, and CAP theorem.",
+    "resources": [
+      {
+        "name": "System Design Primer",
+        "url": "https://github.com/donnemartin/system-design-primer"
+      },
+      {
+        "name": "Designing Data-Intensive Applications",
+        "url": "https://dataintensive.net/"
+      },
+      {
+        "name": "Grokking the System Design Interview",
+        "url": "https://www.educative.io/courses/grokking-the-system-design-interview"
+      }
+    ]
+  },
+  {
+    "id": "rest-api-design",
+    "skill": "REST API Design",
+    "display_name": "REST API Design",
+    "level": "intermediate",
+    "prerequisites": [
+      "python-programming"
+    ],
+    "estimated_hours": 10,
+    "category": "programming",
+    "description": "Design RESTful APIs with proper resource modeling, HTTP methods, status codes, versioning, and authentication.",
+    "resources": [
+      {
+        "name": "RESTful API Design Guide",
+        "url": "https://restfulapi.net/"
+      },
+      {
+        "name": "Swagger/OpenAPI",
+        "url": "https://swagger.io/docs/specification/about/"
+      },
+      {
+        "name": "API Design Patterns",
+        "url": "https://apihandyman.io/"
+      }
+    ]
+  },
+  {
+    "id": "microservices",
+    "skill": "Microservices",
+    "display_name": "Microservices Architecture",
+    "level": "advanced",
+    "prerequisites": [
+      "rest-api-design",
+      "docker"
+    ],
+    "estimated_hours": 18,
+    "category": "programming",
+    "description": "Design and build microservices with service discovery, API gateways, event-driven architecture, and observability.",
+    "resources": [
+      {
+        "name": "Microservices.io",
+        "url": "https://microservices.io/"
+      },
+      {
+        "name": "Building Microservices Book",
+        "url": "https://www.oreilly.com/library/view/building-microservices-2nd/9781492034018/"
+      },
+      {
+        "name": "Martin Fowler Microservices",
+        "url": "https://martinfowler.com/articles/microservices.html"
+      }
+    ]
+  },
+  {
+    "id": "database-design",
+    "skill": "Database Design",
+    "display_name": "Database Design",
+    "level": "intermediate",
+    "prerequisites": [
+      "sql"
+    ],
+    "estimated_hours": 12,
+    "category": "programming",
+    "description": "Learn database normalization, ER diagrams, indexing strategies, NoSQL concepts, and schema design patterns.",
+    "resources": [
+      {
+        "name": "Database Design Tutorial",
+        "url": "https://www.lucidchart.com/pages/database-diagram/database-design"
+      },
+      {
+        "name": "MongoDB University",
+        "url": "https://university.mongodb.com/"
+      },
+      {
+        "name": "Prisma Data Guide",
+        "url": "https://www.prisma.io/dataguide"
+      }
+    ]
+  },
+  {
+    "id": "software-testing",
+    "skill": "Software Testing",
+    "display_name": "Software Testing",
+    "level": "intermediate",
+    "prerequisites": [
+      "python-programming"
+    ],
+    "estimated_hours": 10,
+    "category": "programming",
+    "description": "Learn unit testing, integration testing, TDD, mocking, test automation, and CI testing strategies.",
+    "resources": [
+      {
+        "name": "Python Testing with pytest",
+        "url": "https://docs.pytest.org/en/stable/"
+      },
+      {
+        "name": "Test Automation University",
+        "url": "https://testautomationu.applitools.com/"
+      },
+      {
+        "name": "Ministry of Testing",
+        "url": "https://www.ministryoftesting.com/"
+      }
+    ]
+  },
+  {
+    "id": "ux-design",
+    "skill": "UX Design",
+    "display_name": "UX Design Principles",
+    "level": "intermediate",
+    "prerequisites": [
+      "problem-solving"
+    ],
+    "estimated_hours": 12,
+    "category": "programming",
+    "description": "Learn user research, wireframing, prototyping, usability testing, and design thinking methodology.",
+    "resources": [
+      {
+        "name": "Google UX Design Certificate",
+        "url": "https://grow.google/certificates/ux-design/"
+      },
+      {
+        "name": "Nielsen Norman Group",
+        "url": "https://www.nngroup.com/articles/"
+      },
+      {
+        "name": "Law of UX",
+        "url": "https://lawsofux.com/"
+      }
+    ]
+  },
+  {
+    "id": "agile-methodology",
+    "skill": "Agile Methodology",
+    "display_name": "Agile Methodology",
+    "level": "beginner",
+    "prerequisites": [],
+    "estimated_hours": 8,
+    "category": "leadership",
+    "description": "Learn Agile principles, Scrum framework, sprint planning, daily standups, retrospectives, and Kanban boards.",
+    "resources": [
+      {
+        "name": "Agile Manifesto",
+        "url": "https://agilemanifesto.org/"
+      },
+      {
+        "name": "Scrum Guide",
+        "url": "https://scrumguides.org/scrum-guide.html"
+      },
+      {
+        "name": "Mountain Goat Software",
+        "url": "https://www.mountaingoatsoftware.com/"
+      }
+    ]
+  },
+  {
+    "id": "project-management",
+    "skill": "Project Management",
+    "display_name": "Project Management",
+    "level": "intermediate",
+    "prerequisites": [
+      "agile-methodology"
+    ],
+    "estimated_hours": 14,
+    "category": "leadership",
+    "description": "Master project planning, resource allocation, risk management, stakeholder communication, and delivery tracking.",
+    "resources": [
+      {
+        "name": "PMI Resources",
+        "url": "https://www.pmi.org/learning"
+      },
+      {
+        "name": "Atlassian Project Management",
+        "url": "https://www.atlassian.com/work-management/project-management"
+      },
+      {
+        "name": "Google Project Management Certificate",
+        "url": "https://grow.google/certificates/project-management/"
+      }
+    ]
+  },
+  {
+    "id": "team-leadership",
+    "skill": "Team Leadership",
+    "display_name": "Team Leadership",
+    "level": "intermediate",
+    "prerequisites": [
+      "agile-methodology"
+    ],
+    "estimated_hours": 10,
+    "category": "leadership",
+    "description": "Develop leadership skills including team motivation, conflict resolution, delegation, mentoring, and feedback delivery.",
+    "resources": [
+      {
+        "name": "Harvard Business Review Leadership",
+        "url": "https://hbr.org/topic/leadership"
+      },
+      {
+        "name": "MindTools Leadership Skills",
+        "url": "https://www.mindtools.com/pages/main/newMN_LDR.htm"
+      },
+      {
+        "name": "Simon Sinek Leadership Insights",
+        "url": "https://simonsinek.com/"
+      }
+    ]
+  },
+  {
+    "id": "business-communication",
+    "skill": "Business Communication",
+    "display_name": "Business Communication",
+    "level": "beginner",
+    "prerequisites": [],
+    "estimated_hours": 6,
+    "category": "leadership",
+    "description": "Improve professional communication including email writing, presentations, meeting facilitation, and stakeholder updates.",
+    "resources": [
+      {
+        "name": "Coursera Business Communication",
+        "url": "https://www.coursera.org/learn/wharton-communication"
+      },
+      {
+        "name": "Grammarly Business Writing",
+        "url": "https://www.grammarly.com/business/learn/"
+      },
+      {
+        "name": "LinkedIn Learning Communication Series",
+        "url": "https://www.linkedin.com/learning/topics/communication"
+      }
+    ]
+  },
+  {
+    "id": "product-management",
+    "skill": "Product Management",
+    "display_name": "Product Management",
+    "level": "advanced",
+    "prerequisites": [
+      "project-management",
+      "team-leadership"
+    ],
+    "estimated_hours": 16,
+    "category": "leadership",
+    "description": "Learn product strategy, roadmap creation, user story writing, prioritization frameworks, and go-to-market planning.",
+    "resources": [
+      {
+        "name": "Product School Resources",
+        "url": "https://productschool.com/resources"
+      },
+      {
+        "name": "Inspired by Marty Cagan",
+        "url": "https://www.svpg.com/inspired-how-to-create-products-customers-love/"
+      },
+      {
+        "name": "Lenny's Newsletter",
+        "url": "https://www.lennysnewsletter.com/"
+      }
+    ]
+  },
+  {
+    "id": "financial-management",
+    "skill": "Financial Management",
+    "display_name": "Financial Management",
+    "level": "intermediate",
+    "prerequisites": [
+      "microsoft-excel"
+    ],
+    "estimated_hours": 12,
+    "category": "leadership",
+    "description": "Understand budgeting, forecasting, P&L statements, cost-benefit analysis, and financial decision-making for teams.",
+    "resources": [
+      {
+        "name": "Khan Academy Finance",
+        "url": "https://www.khanacademy.org/economics-finance-domain"
+      },
+      {
+        "name": "Corporate Finance Institute",
+        "url": "https://corporatefinanceinstitute.com/resources/"
+      },
+      {
+        "name": "Investopedia Basics",
+        "url": "https://www.investopedia.com/financial-term-dictionary-4769738"
+      }
+    ]
+  },
+  {
+    "id": "inventory-management",
+    "skill": "Inventory Management",
+    "display_name": "Inventory Management",
+    "level": "beginner",
+    "prerequisites": [],
+    "estimated_hours": 8,
+    "category": "operations",
+    "description": "Learn inventory control methods, stock tracking, reorder points, ABC analysis, and warehouse organization basics.",
+    "resources": [
+      {
+        "name": "Coursera Supply Chain",
+        "url": "https://www.coursera.org/learn/supply-chain-logistics"
+      },
+      {
+        "name": "Investopedia Inventory",
+        "url": "https://www.investopedia.com/terms/i/inventory-management.asp"
+      },
+      {
+        "name": "TradeGecko Inventory Academy",
+        "url": "https://www.quickbooks.com/inventory-management/"
+      }
+    ]
+  },
+  {
+    "id": "supply-chain-management",
+    "skill": "Supply Chain Management",
+    "display_name": "Supply Chain Management",
+    "level": "intermediate",
+    "prerequisites": [
+      "inventory-management"
+    ],
+    "estimated_hours": 14,
+    "category": "operations",
+    "description": "Master supply chain optimization, logistics, vendor management, demand forecasting, and procurement strategies.",
+    "resources": [
+      {
+        "name": "MIT Supply Chain Course",
+        "url": "https://www.edx.org/micromasters/mitx-supply-chain-management"
+      },
+      {
+        "name": "APICS Resources",
+        "url": "https://www.ascm.org/learning-development/"
+      },
+      {
+        "name": "Supply Chain Dive",
+        "url": "https://www.supplychaindive.com/"
+      }
+    ]
+  },
+  {
+    "id": "safety-protocols",
+    "skill": "Safety Protocols",
+    "display_name": "Workplace Safety Protocols",
+    "level": "beginner",
+    "prerequisites": [],
+    "estimated_hours": 6,
+    "category": "operations",
+    "description": "Learn OSHA regulations, hazard identification, PPE usage, emergency procedures, and workplace safety culture.",
+    "resources": [
+      {
+        "name": "OSHA Training",
+        "url": "https://www.osha.gov/training"
+      },
+      {
+        "name": "NSC Safety Resources",
+        "url": "https://www.nsc.org/workplace"
+      },
+      {
+        "name": "Safety+Health Magazine",
+        "url": "https://www.safetyandhealthmagazine.com/"
+      }
+    ]
+  },
+  {
+    "id": "erp-systems",
+    "skill": "ERP Systems",
+    "display_name": "ERP Systems",
+    "level": "intermediate",
+    "prerequisites": [
+      "inventory-management"
+    ],
+    "estimated_hours": 16,
+    "category": "operations",
+    "description": "Learn enterprise resource planning systems including SAP/Oracle basics, module integration, and business process automation.",
+    "resources": [
+      {
+        "name": "SAP Learning Hub",
+        "url": "https://learning.sap.com/"
+      },
+      {
+        "name": "Oracle University",
+        "url": "https://education.oracle.com/"
+      },
+      {
+        "name": "ERP Focus",
+        "url": "https://www.erpfocus.com/"
+      }
+    ]
+  },
+  {
+    "id": "quality-management",
+    "skill": "Quality Management",
+    "display_name": "Quality Management",
+    "level": "intermediate",
+    "prerequisites": [
+      "safety-protocols"
+    ],
+    "estimated_hours": 10,
+    "category": "operations",
+    "description": "Learn Six Sigma basics, quality control processes, ISO standards, root cause analysis, and continuous improvement.",
+    "resources": [
+      {
+        "name": "ASQ Quality Resources",
+        "url": "https://asq.org/quality-resources"
+      },
+      {
+        "name": "Six Sigma Online",
+        "url": "https://www.sixsigmaonline.org/"
+      },
+      {
+        "name": "Quality Digest",
+        "url": "https://www.qualitydigest.com/"
+      }
+    ]
+  },
+  {
+    "id": "customer-service",
+    "skill": "Customer Service",
+    "display_name": "Customer Service Excellence",
+    "level": "beginner",
+    "prerequisites": [],
+    "estimated_hours": 6,
+    "category": "operations",
+    "description": "Develop skills in customer communication, complaint handling, service recovery, CRM tools, and customer satisfaction measurement.",
+    "resources": [
+      {
+        "name": "HubSpot Service Hub",
+        "url": "https://academy.hubspot.com/courses/customer-service"
+      },
+      {
+        "name": "Coursera Customer Service",
+        "url": "https://www.coursera.org/learn/customer-service"
+      },
+      {
+        "name": "Zendesk Customer Service Blog",
+        "url": "https://www.zendesk.com/blog/"
+      }
+    ]
+  },
+  {
+    "id": "forklift-operation",
+    "skill": "Forklift Operation",
+    "display_name": "Forklift Operation & Certification",
+    "level": "beginner",
+    "prerequisites": [],
+    "estimated_hours": 8,
+    "category": "operations",
+    "description": "Learn safe forklift operation, load handling, pre-operation inspections, and OSHA forklift certification requirements.",
+    "resources": [
+      {
+        "name": "OSHA Forklift Standards",
+        "url": "https://www.osha.gov/powered-industrial-trucks"
+      },
+      {
+        "name": "Forklift Academy",
+        "url": "https://www.forkliftacademy.com/"
+      },
+      {
+        "name": "Toyota Forklift Safety",
+        "url": "https://www.toyotaforklift.com/resource-library/safety"
+      }
+    ]
   }
 ]

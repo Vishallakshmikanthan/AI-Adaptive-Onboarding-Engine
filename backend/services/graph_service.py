@@ -10,9 +10,11 @@ def build_course_graph(catalog: list) -> nx.DiGraph:
         G.add_node(
             course["id"],
             skill=course.get("skill", ""),
-            title=course.get("title", course.get("skill", "")),
+            display_name=course.get("display_name", course.get("skill", "")),
             estimated_hours=course.get("estimated_hours", 0),
             level=course.get("level", "beginner"),
+            category=course.get("category", "fundamentals"),
+            description=course.get("description", ""),
         )
 
     for course in catalog:
@@ -89,9 +91,11 @@ def generate_adaptive_pathway(
         pathway.append({
             "id": course_id,
             "skill": node.get("skill", ""),
-            "display_name": node.get("title", ""),
+            "display_name": node.get("display_name", node.get("skill", "")),
             "level": node.get("level", "beginner"),
             "estimated_hours": hours,
+            "category": node.get("category", "fundamentals"),
+            "description": node.get("description", ""),
             "order": order,
             "gap_relevance": gap_map.get(course_id, 0.0),
         })

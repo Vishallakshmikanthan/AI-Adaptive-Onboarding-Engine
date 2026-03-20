@@ -130,7 +130,7 @@ export default function UploadPage() {
         max_hours: 120,
       });
 
-      localStorage.setItem("roadmap", JSON.stringify(res.data));
+      localStorage.setItem("pathway_data", JSON.stringify(res.data));
       router.push("/roadmap");
     } catch (err: any) {
       setError(
