@@ -37,6 +37,11 @@ export default function RootLayout({
               <Link href="/compare" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors font-medium">
                 Compare Candidates
               </Link>
+              <a href="/recruiter"
+                className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B] animate-pulse" />
+                Recruiter Mode
+              </a>
               <Link href="/history" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors font-medium">
                 History
               </Link>
