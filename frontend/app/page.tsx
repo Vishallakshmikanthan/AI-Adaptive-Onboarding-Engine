@@ -1,9 +1,52 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useDropzone, DropzoneOptions } from "react-dropzone";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+
+const ROLE_TEMPLATES = [
+  {
+    label: "Software Engineer",
+    icon: "💻",
+    jd: "Senior Software Engineer position requiring Python, Java, Docker, Kubernetes, AWS, CI/CD, System Design, Microservices, REST API Design, SQL"
+  },
+  {
+    label: "Data Scientist", 
+    icon: "📊",
+    jd: "Data Scientist position requiring Machine Learning, Deep Learning, Python, Statistics, Data Visualization, NLP, SQL, TensorFlow, Feature Engineering"
+  },
+  {
+    label: "DevOps Engineer",
+    icon: "⚙️", 
+    jd: "DevOps Engineer position requiring Docker, Kubernetes, AWS, CI/CD, Linux, Terraform, Ansible, Monitoring, Python scripting, Cloud Security"
+  },
+  {
+    label: "Product Manager",
+    icon: "🎯",
+    jd: "Product Manager position requiring Product Management, Agile Methodology, Business Communication, Data Analysis, UX Design, Financial Management, Team Leadership, Project Management"
+  },
+  {
+    label: "Data Analyst",
+    icon: "📈",
+    jd: "Data Analyst position requiring SQL, Data Analysis, Data Visualization, Microsoft Excel, Statistics, Python, Tableau, Business Communication, Database Design"
+  },
+  {
+    label: "Cloud Architect",
+    icon: "☁️",
+    jd: "Cloud Architect position requiring AWS Advanced, Azure, Google Cloud Platform, Docker, Kubernetes, Cloud Security, Networking, DevOps, System Design, Microservices"
+  }
+];
+
+const ANALYSIS_STEPS = [
+  { id: 1, text: "Parsing your resume...", duration: 1000 },
+  { id: 2, text: "Extracting skills from resume...", duration: 1500 },
+  { id: 3, text: "Analyzing job description...", duration: 1000 },
+  { id: 4, text: "Computing skill gaps...", duration: 2000 },
+  { id: 5, text: "Building learning pathway...", duration: 1500 },
+  { id: 6, text: "Generating AI reasoning...", duration: 1000 },
+  { id: 7, text: "Finalizing your roadmap...", duration: 500 },
+];
 
 // Icons (Inlined to avoid missing dependencies)
 const UploadIcon = ({ className = "w-6 h-6" }) => (
@@ -40,17 +83,56 @@ const SpinnerIcon = ({ className = "w-6 h-6" }) => (
 export default function UploadPage() {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [jdFile, setJdFile] = useState<File | null>(null);
+  const [resumeFileName, setResumeFileName] = useState<string>("");
+  const [jdFileName, setJdFileName] = useState<string>("");
   const [resumeText, setResumeText] = useState<string>("");
   const [jdText, setJdText] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  
+  const [currentStep, setCurrentStep] = useState(0);
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  
+  const [toastMessage, setToastMessage] = useState<string>("");
+  const [clickedTemplate, setClickedTemplate] = useState<string>("");
 
   const router = useRouter();
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => {
+      setToastMessage("");
+    }, 3000);
+  };
+
+  const handleDemo1 = () => {
+    setResumeText("John Smith - Software Engineer\nSkills: Python (3 years), JavaScript (2 years), React (2 years), \nSQL (2 years), Git, REST APIs, HTML/CSS\nExperience: Built e-commerce web application, automated data pipelines,\ndeveloped REST APIs for mobile applications\nEducation: B.E. Computer Science, CGPA 8.5\nProjects: Student management system, weather app, chat application");
+    setJdText("Senior Software Engineer - Job Description\nRequired Skills: Python, Java, Machine Learning, Docker, Kubernetes,\nAWS, CI/CD pipelines, System Design, Microservices Architecture,\nREST API Design, SQL Advanced\nPreferred: Azure, GCP, Terraform, Redis\nExperience: 3+ years in backend development\nRole involves designing scalable distributed systems");
+    setResumeFileName("sample_swe_resume.txt");
+    setJdFileName("sample_swe_jd.txt");
+    showToast("Sample SWE profile loaded! Click Analyze to continue.");
+  };
+
+  const handleDemo2 = () => {
+    setResumeText("Maria Garcia - Operations Worker\nSkills: Basic computer use, Microsoft Excel (basic), \nCustomer service (3 years), Physical inventory counting,\nCash register operation, Team communication\nExperience: Retail cashier 2 years, General store assistant 1 year,\nHelped with stock taking and shelf arrangement\nEducation: High School Diploma");
+    setJdText("Warehouse Operations Supervisor - Job Description\nRequired Skills: Inventory Management, Supply Chain Management,\nTeam Leadership, Safety Protocols, Forklift Operation,\nERP Systems, Quality Management, Microsoft Excel Advanced\nPreferred: Six Sigma certification, SAP experience\nExperience: 2+ years in warehouse or logistics environment\nRole involves supervising a team of 10 warehouse staff");
+    setResumeFileName("sample_warehouse_resume.txt");
+    setJdFileName("sample_warehouse_jd.txt");
+    showToast("Sample Warehouse profile loaded! Click Analyze to continue.");
+  };
+
+  const handleRoleTemplate = (label: string, jd: string) => {
+    setJdText(jd);
+    setJdFileName(label + "_jd.txt");
+    setClickedTemplate(label);
+    showToast(label + " template loaded!");
+  };
 
   const onResumeDrop = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
     const file = acceptedFiles[0];
     setResumeFile(file);
+    setResumeFileName(file.name);
     setError("");
 
     const formData = new FormData();
@@ -62,10 +144,9 @@ export default function UploadPage() {
       });
       setResumeText(res.data.text);
     } catch (err: any) {
-      setError(
-        err.response?.data?.detail || err.message || "Failed to parse resume."
-      );
+      setError(err.response?.data?.detail || err.message || "Failed to parse resume.");
       setResumeFile(null);
+      setResumeFileName("");
       setResumeText("");
     }
   }, []);
@@ -74,6 +155,7 @@ export default function UploadPage() {
     if (acceptedFiles.length === 0) return;
     const file = acceptedFiles[0];
     setJdFile(file);
+    setJdFileName(file.name);
     setError("");
 
     const formData = new FormData();
@@ -84,13 +166,11 @@ export default function UploadPage() {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setJdText(res.data.text);
+      setClickedTemplate("");
     } catch (err: any) {
-      setError(
-        err.response?.data?.detail ||
-          err.message ||
-          "Failed to parse job description."
-      );
+      setError(err.response?.data?.detail || err.message || "Failed to parse job description.");
       setJdFile(null);
+      setJdFileName("");
       setJdText("");
     }
   }, []);
@@ -98,9 +178,7 @@ export default function UploadPage() {
   const dropzoneOptions: DropzoneOptions = {
     accept: {
       "application/pdf": [".pdf"],
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
-        ".docx",
-      ],
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
     },
     maxFiles: 1,
   };
@@ -117,6 +195,30 @@ export default function UploadPage() {
     isDragActive: isJDDragActive,
   } = useDropzone({ ...dropzoneOptions, onDrop: onJdDrop });
 
+  useEffect(() => {
+    if (loading) {
+      let currentIdx = 0;
+      setCompletedSteps([]);
+      setCurrentStep(ANALYSIS_STEPS[0].id);
+
+      const runSteps = () => {
+        if (currentIdx >= ANALYSIS_STEPS.length) return;
+        const idx = currentIdx;
+        
+        setTimeout(() => {
+          setCompletedSteps(prev => [...prev, ANALYSIS_STEPS[idx].id]);
+          currentIdx++;
+          if (currentIdx < ANALYSIS_STEPS.length) {
+            setCurrentStep(ANALYSIS_STEPS[currentIdx].id);
+            runSteps();
+          }
+        }, ANALYSIS_STEPS[idx].duration);
+      };
+
+      runSteps();
+    }
+  }, [loading]);
+
   const handleAnalyze = async () => {
     if (!resumeText || !jdText) return;
 
@@ -131,11 +233,9 @@ export default function UploadPage() {
       });
 
       localStorage.setItem("pathway_data", JSON.stringify(res.data));
-      router.push("/roadmap");
+      router.push(res.data.session_id ? `/roadmap?session=${res.data.session_id}` : "/roadmap");
     } catch (err: any) {
-      setError(
-        err.response?.data?.detail || err.message || "Failed to analyze data."
-      );
+      setError(err.response?.data?.detail || err.message || "Failed to analyze data.");
       setLoading(false);
     }
   };
@@ -149,9 +249,16 @@ export default function UploadPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0F1E] text-white p-6 flex flex-col items-center justify-center font-sans">
+    <div className="min-h-screen bg-[#0A0F1E] text-white p-6 flex flex-col items-center justify-center font-sans tracking-wide">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-green-500/90 text-white px-5 py-3 rounded-xl shadow-lg transition-transform animate-slide-in-right">
+          {toastMessage}
+        </div>
+      )}
+
       <div className="w-full max-w-5xl">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
             AI-Adaptive Onboarding
           </h1>
@@ -161,6 +268,46 @@ export default function UploadPage() {
           </p>
         </div>
 
+        {/* Demo Section */}
+        <div className="mb-8">
+          <h3 className="text-gray-400 text-sm text-center mb-4">Or try with a sample profile</h3>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <button
+              onClick={handleDemo1}
+              className="bg-[#1A2035] hover:bg-[#2E86AB]/20 border border-gray-700 hover:border-[#2E86AB]/50 text-white text-sm px-5 py-3 rounded-xl transition-all flex items-center justify-center gap-2"
+            >
+              🧑‍💻 Software Engineer Demo
+            </button>
+            <button
+              onClick={handleDemo2}
+              className="bg-[#1A2035] hover:bg-[#2E86AB]/20 border border-gray-700 hover:border-[#2E86AB]/50 text-white text-sm px-5 py-3 rounded-xl transition-all flex items-center justify-center gap-2"
+            >
+              🏭 Warehouse Operations Demo
+            </button>
+          </div>
+        </div>
+
+        {/* Role Templates Section */}
+        <div className="mb-10 max-w-3xl mx-auto">
+          <h3 className="text-gray-400 text-sm text-center mb-3">Quick Role Templates</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {ROLE_TEMPLATES.map((tpl) => (
+              <button
+                key={tpl.label}
+                onClick={() => handleRoleTemplate(tpl.label, tpl.jd)}
+                className={`
+                  bg-[#1A2035] hover:bg-[#2E86AB]/10 border 
+                  ${clickedTemplate === tpl.label ? "border-[#2E86AB] bg-[#2E86AB]/10" : "border-gray-700/50"} 
+                  hover:border-[#2E86AB]/40 rounded-xl p-3 text-center transition-all flex flex-col items-center
+                `}
+              >
+                <div className="text-2xl">{tpl.icon}</div>
+                <div className="text-xs text-gray-300 font-medium mt-1">{tpl.label}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+
         {error && (
           <div className="mb-8 p-4 bg-red-500/10 border border-red-500/50 rounded-xl flex items-start gap-3 text-red-400">
             <AlertCircleIcon className="w-5 h-5 shrink-0 mt-0.5" />
@@ -168,152 +315,218 @@ export default function UploadPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-          {/* Resume Upload Zone */}
-          <div className="flex flex-col gap-4">
-            <h2 className="text-xl font-semibold flex items-center gap-3">
-              <span className="bg-[#2E86AB] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">
-                1
-              </span>
-              Resume
-            </h2>
-            <div
-              {...getResumeRootProps()}
-              className={`
-                relative group flex flex-col items-center justify-center p-8 
-                border-2 border-dashed rounded-2xl transition-all duration-300
-                bg-[#1A2035] min-h-[250px] cursor-pointer
-                ${
-                  isResumeDragActive
-                    ? "border-[#2E86AB] bg-[#2E86AB]/10 scale-[1.02]"
-                    : "border-gray-600 hover:border-[#2E86AB] hover:bg-[#1A2035]/80"
-                }
-              `}
-            >
-              <input {...getResumeInputProps()} />
-              {resumeFile ? (
-                <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-2">
-                    <CheckCircleIcon className="w-8 h-8 text-green-400" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-200 line-clamp-1 break-all">
-                      {resumeFile.name}
-                    </p>
-                    <p className="text-sm text-gray-500 mt-1">
-                      {formatFileSize(resumeFile.size)}
-                    </p>
-                  </div>
-                  {resumeText && (
-                    <span className="text-xs font-medium px-3 py-1 bg-green-500/20 text-green-400 rounded-full mt-2">
-                      Parsed Successfully
+        {loading ? (
+          <div className="bg-[#1A2035] rounded-2xl p-6 border border-[#2E86AB]/20 w-full animate-slide-up">
+            <h2 className="text-white font-semibold mb-6">Analyzing your profile...</h2>
+            <div className="space-y-4">
+              {ANALYSIS_STEPS.map((step) => {
+                const isCompleted = completedSteps.includes(step.id);
+                const isCurrent = currentStep === step.id;
+                return (
+                  <div key={step.id} className="flex items-center gap-4">
+                    {isCompleted ? (
+                      <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                        <CheckCircleIcon className="w-4 h-4 text-green-400" />
+                      </div>
+                    ) : isCurrent ? (
+                      <div className="w-6 h-6 rounded-full bg-[#2E86AB]/20 flex items-center justify-center flex-shrink-0">
+                        <SpinnerIcon className="w-4 h-4 text-[#2E86AB]" />
+                      </div>
+                    ) : (
+                      <div className="w-6 h-6 rounded-full border border-gray-600 flex items-center justify-center flex-shrink-0"></div>
+                    )}
+                    <span
+                      className={`text-sm ${
+                        isCompleted
+                          ? "text-gray-400 line-through"
+                          : isCurrent
+                          ? "text-white font-medium flex items-center"
+                          : "text-gray-600"
+                      }`}
+                    >
+                      {step.text}
+                      {isCurrent && (
+                        <span className="flex">
+                          <span className="animate-bounce mx-[1px]">.</span>
+                          <span className="animate-bounce delay-100 mx-[1px]">.</span>
+                          <span className="animate-bounce delay-200 mx-[1px]">.</span>
+                        </span>
+                      )}
                     </span>
-                  )}
-                </div>
-              ) : (
-                <div className="flex flex-col items-center text-center opacity-70 group-hover:opacity-100 transition-opacity">
-                  <div className="w-16 h-16 bg-[#2E86AB]/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <UploadIcon className="w-8 h-8 text-[#2E86AB]" />
                   </div>
-                  <p className="text-lg font-medium mb-1">
-                    Drop your resume here
-                  </p>
-                  <p className="text-sm text-gray-400">
-                    or click to browse (.pdf, .docx)
-                  </p>
-                </div>
-              )}
+                );
+              })}
+            </div>
+            <div className="mt-6">
+              <div className="bg-gray-700/30 rounded-full h-2 w-full overflow-hidden">
+                <div
+                  className="bg-gradient-to-r from-[#2E86AB] to-green-400 h-full transition-all duration-500"
+                  style={{ width: `${(completedSteps.length / ANALYSIS_STEPS.length) * 100}%` }}
+                ></div>
+              </div>
             </div>
           </div>
-
-          {/* Job Description Upload Zone */}
-          <div className="flex flex-col gap-4">
-            <h2 className="text-xl font-semibold flex items-center gap-3">
-              <span className="bg-[#2E86AB] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">
-                2
-              </span>
-              Job Description
-            </h2>
-            <div
-              {...getJDRootProps()}
-              className={`
-                relative group flex flex-col items-center justify-center p-8 
-                border-2 border-dashed rounded-2xl transition-all duration-300
-                bg-[#1A2035] min-h-[250px] cursor-pointer
-                ${
-                  isJDDragActive
-                    ? "border-[#2E86AB] bg-[#2E86AB]/10 scale-[1.02]"
-                    : "border-gray-600 hover:border-[#2E86AB] hover:bg-[#1A2035]/80"
-                }
-              `}
-            >
-              <input {...getJDInputProps()} />
-              {jdFile ? (
-                <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-2">
-                    <CheckCircleIcon className="w-8 h-8 text-green-400" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-200 line-clamp-1 break-all">
-                      {jdFile.name}
-                    </p>
-                    <p className="text-sm text-gray-500 mt-1">
-                      {formatFileSize(jdFile.size)}
-                    </p>
-                  </div>
-                  {jdText && (
-                    <span className="text-xs font-medium px-3 py-1 bg-green-500/20 text-green-400 rounded-full mt-2">
-                      Parsed Successfully
-                    </span>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+              {/* Resume Upload Zone */}
+              <div className="flex flex-col gap-4">
+                <h2 className="text-xl font-semibold flex items-center gap-3">
+                  <span className="bg-[#2E86AB] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">
+                    1
+                  </span>
+                  Resume
+                </h2>
+                <div
+                  {...getResumeRootProps()}
+                  className={`
+                    relative group flex flex-col items-center justify-center p-8 
+                    border-2 border-dashed rounded-2xl transition-all duration-300
+                    bg-[#1A2035] min-h-[250px] cursor-pointer
+                    ${
+                      isResumeDragActive
+                        ? "border-[#2E86AB] bg-[#2E86AB]/10 scale-[1.02]"
+                        : "border-gray-600 hover:border-[#2E86AB] hover:bg-[#1A2035]/80"
+                    }
+                  `}
+                >
+                  <input {...getResumeInputProps()} />
+                  {resumeFileName ? (
+                    <div className="flex flex-col items-center text-center space-y-3">
+                      <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-2">
+                        <CheckCircleIcon className="w-8 h-8 text-green-400" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-200 line-clamp-1 break-all">
+                          {resumeFileName}
+                        </p>
+                        {resumeFile && (
+                          <p className="text-sm text-gray-500 mt-1">
+                            {formatFileSize(resumeFile.size)}
+                          </p>
+                        )}
+                      </div>
+                      {resumeText && (
+                        <span className="text-xs font-medium px-3 py-1 bg-green-500/20 text-green-400 rounded-full mt-2">
+                          Ready
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center text-center opacity-70 group-hover:opacity-100 transition-opacity">
+                      <div className="w-16 h-16 bg-[#2E86AB]/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <UploadIcon className="w-8 h-8 text-[#2E86AB]" />
+                      </div>
+                      <p className="text-lg font-medium mb-1">
+                        Drop your resume here
+                      </p>
+                      <p className="text-sm text-gray-400">
+                        or click to browse (.pdf, .docx)
+                      </p>
+                    </div>
                   )}
                 </div>
+              </div>
+
+              {/* Job Description Upload Zone */}
+              <div className="flex flex-col gap-4">
+                <h2 className="text-xl font-semibold flex items-center gap-3">
+                  <span className="bg-[#2E86AB] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">
+                    2
+                  </span>
+                  Job Description
+                </h2>
+                <div
+                  {...getJDRootProps()}
+                  className={`
+                    relative group flex flex-col items-center justify-center p-8 
+                    border-2 border-dashed rounded-2xl transition-all duration-300
+                    bg-[#1A2035] min-h-[250px] cursor-pointer
+                    ${
+                      isJDDragActive
+                        ? "border-[#2E86AB] bg-[#2E86AB]/10 scale-[1.02]"
+                        : "border-gray-600 hover:border-[#2E86AB] hover:bg-[#1A2035]/80"
+                    }
+                  `}
+                >
+                  <input {...getJDInputProps()} />
+                  {jdFileName ? (
+                    <div className="flex flex-col items-center text-center space-y-3">
+                      <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-2">
+                        <CheckCircleIcon className="w-8 h-8 text-green-400" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-200 line-clamp-1 break-all">
+                          {jdFileName}
+                        </p>
+                        {jdFile && (
+                          <p className="text-sm text-gray-500 mt-1">
+                            {formatFileSize(jdFile.size)}
+                          </p>
+                        )}
+                      </div>
+                      {jdText && (
+                        <span className="text-xs font-medium px-3 py-1 bg-green-500/20 text-green-400 rounded-full mt-2">
+                          Ready
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center text-center opacity-70 group-hover:opacity-100 transition-opacity">
+                      <div className="w-16 h-16 bg-[#2E86AB]/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <FileTextIcon className="w-8 h-8 text-[#2E86AB]" />
+                      </div>
+                      <p className="text-lg font-medium mb-1">
+                        Drop the JD here
+                      </p>
+                      <p className="text-sm text-gray-400">
+                        or click to browse (.pdf, .docx)<br />or select a template above
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Analyze Action */}
+            <div className="flex justify-center h-20 items-center">
+              {resumeText && jdText ? (
+                <button
+                  onClick={handleAnalyze}
+                  className={`
+                    flex items-center justify-center gap-3 px-8 py-4 
+                    bg-[#2E86AB] hover:bg-[#236e8e] text-white text-lg font-semibold 
+                    rounded-xl transition-all duration-300 shadow-lg shadow-[#2E86AB]/25
+                    min-w-[280px] hover:scale-105 active:scale-95
+                  `}
+                >
+                  Analyze & Build Roadmap
+                </button>
               ) : (
-                <div className="flex flex-col items-center text-center opacity-70 group-hover:opacity-100 transition-opacity">
-                  <div className="w-16 h-16 bg-[#2E86AB]/20 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <FileTextIcon className="w-8 h-8 text-[#2E86AB]" />
-                  </div>
-                  <p className="text-lg font-medium mb-1">
-                    Drop the JD here
-                  </p>
-                  <p className="text-sm text-gray-400">
-                    or click to browse (.pdf, .docx)
-                  </p>
+                <div className="text-gray-500 text-sm mt-4 tracking-wide">
+                  Waiting for both text inputs to enable analysis...
                 </div>
               )}
             </div>
-          </div>
-        </div>
-
-        {/* Analyze Action */}
-        <div className="flex justify-center h-20 items-center">
-          {resumeText && jdText ? (
-            <button
-              onClick={handleAnalyze}
-              disabled={loading}
-              className={`
-                flex items-center justify-center gap-3 px-8 py-4 
-                bg-[#2E86AB] hover:bg-[#236e8e] text-white text-lg font-semibold 
-                rounded-xl transition-all duration-300 shadow-lg shadow-[#2E86AB]/25
-                min-w-[280px]
-                ${loading ? "opacity-70 cursor-not-allowed scale-95" : "hover:scale-105 active:scale-95"}
-              `}
-            >
-              {loading ? (
-                <>
-                  <SpinnerIcon className="w-6 h-6" />
-                  Analyzing Files...
-                </>
-              ) : (
-                <>Analyze & Build Roadmap</>
-              )}
-            </button>
-          ) : (
-            <div className="text-gray-500 text-sm mt-4 tracking-wide">
-              Waiting for both documents to enable analysis...
-            </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
+      <style dangerouslySetInlineStyle={{__html: `
+        @keyframes slide-in-right {
+          0% { transform: translateX(100%); opacity: 0; }
+          100% { transform: translateX(0); opacity: 1; }
+        }
+        .animate-slide-in-right {
+          animation: slide-in-right 0.3s ease-out forwards;
+        }
+        @keyframes slide-up {
+          0% { transform: translateY(20px); opacity: 0; }
+          100% { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-up {
+          animation: slide-up 0.4s ease-out forwards;
+        }
+      `}} />
     </div>
   );
 }

@@ -7,6 +7,7 @@ import traceback
 from services.llm_service import extract_skills_and_gaps
 from services.embed_service import compute_gap_scores
 from services.graph_service import generate_adaptive_pathway
+from database.session_store import save_session
 
 router = APIRouter()
 
@@ -95,7 +96,19 @@ async def analyze(request: AnalyzeRequest):
             request.max_hours,
         )
 
-        # Step 7 — Return response
+        # Step 7 — Save session to database
+        session_id = save_session(
+            resume_filename=getattr(request, "resume_filename", "uploaded_resume"),
+            jd_filename=getattr(request, "jd_filename", "uploaded_jd"),
+            resume_skills=resume_skills,
+            jd_required_skills=jd_skills,
+            skill_gaps=final_gaps,
+            pathway=pathway_result,
+            reasoning_trace=llm_result.get("reasoning_trace", ""),
+            match_score=llm_result.get("match_score", 0)
+        )
+
+        # Step 8 — Return response
         return {
             "resume_skills": resume_skills,
             "jd_required_skills": jd_skills,
@@ -103,6 +116,7 @@ async def analyze(request: AnalyzeRequest):
             "pathway": pathway_result,
             "reasoning_trace": llm_result.get("reasoning_trace", ""),
             "match_score": llm_result.get("match_score", 0),
+            "session_id": session_id,
         }
 
     except RuntimeError as e:
@@ -113,3 +127,19 @@ async def analyze(request: AnalyzeRequest):
     except Exception as e:
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Internal error: {str(e)}")
+
+
+@router.get("/recent")
+async def get_recent_sessions_endpoint():
+    from database.session_store import get_recent_sessions
+    sessions = get_recent_sessions(limit=5)
+    return {"sessions": sessions}
+
+
+@router.get("/session/{session_id}")
+async def get_session_endpoint(session_id: str):
+    from database.session_store import get_session_by_id
+    session = get_session_by_id(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    return session

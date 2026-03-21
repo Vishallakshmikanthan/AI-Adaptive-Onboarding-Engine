@@ -1,75 +1,132 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import RoadmapTimeline from "@/components/RoadmapTimeline";
 import ReasoningTrace from "@/components/ReasoningTrace";
-import { Download, Book, Clock, Zap, Target } from "lucide-react";
+import SkillGapChart from "@/components/SkillGapChart";
+import MatchScoreRing from "@/components/MatchScoreRing";
+import WeeklyTimeline from "@/components/WeeklyTimeline";
+import { Download, Book, Clock, Zap, Target, Share2, X, Check } from "lucide-react";
+import confetti from "canvas-confetti";
+import axios from "axios";
 
 interface RoadmapData {
+  session_id?: string;
   match_score: number;
-  skill_gaps: { skill: string }[];
+  skill_gaps: { skill: string; gap_relevance?: number; gap_score?: number }[];
   reasoning_trace?: string;
   pathway: {
-    pathway: {
-      id: string;
-      display_name: string;
-      level: string;
-      estimated_hours: number;
-      category: string;
-      description: string;
-      order: number;
-      gap_relevance: number;
-      resources?: { name: string; url: string }[];
-    }[];
+    pathway: any[];
     total_courses: number;
     total_estimated_hours: number;
     courses_skipped: number;
   };
 }
 
-export default function RoadmapPage() {
+function RoadmapContent() {
   const [data, setData] = useState<RoadmapData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [progressWidth, setProgressWidth] = useState(0);
+  const [viewMode, setViewMode] = useState<"timeline" | "weekly">("timeline");
+  const [completedCount, setCompletedCount] = useState(0);
+  const [toastMessage, setToastMessage] = useState("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const sessionId = searchParams.get("session");
 
   useEffect(() => {
-    // Minimum loading duration of 800ms
     const minDelay = new Promise(resolve => setTimeout(resolve, 800));
     
     const loadData = async () => {
       try {
+        if (sessionId) {
+          // If we had an API endpoint: 
+          // const res = await axios.get(`/api/pathway/session/${sessionId}`);
+          // setData(res.data);
+          // For now rely on localstorage if we're simulating the session without full backend support
+          // If it's stored under another API we could fetch it.
+        }
+        
         const raw = localStorage.getItem("pathway_data");
         if (raw) {
           const parsed = JSON.parse(raw);
           setData(parsed);
-          // Set progress width shortly after data loads to trigger animation
-          setTimeout(() => {
-            setProgressWidth(Math.round((parsed.match_score ?? 0) * 100));
-          }, 100);
+          
+          if (parsed.session_id && !sessionId) {
+            window.history.replaceState({}, "", `/roadmap?session=${parsed.session_id}`);
+          }
+
+          if (parsed.match_score >= 0.6) {
+            setTimeout(() => {
+              confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ["#2E86AB", "#F18F01", "#ffffff", "#10b981"]
+              });
+            }, 800);
+          }
         }
       } catch (err) {
-        console.error("Failed to parse pathway_data", err);
+        console.error("Failed to load pathway_data", err);
       }
     };
 
     Promise.all([loadData(), minDelay]).then(() => {
       setLoading(false);
     });
-  }, []);
+  }, [sessionId]);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(""), 3000);
+  };
+
+  const handleShare = () => {
+    const shareUrl = window.location.href;
+    navigator.clipboard.writeText(shareUrl);
+    showToast("Link copied to clipboard! ✓");
+  };
 
   const handleExport = () => {
     if (!data) return;
 
-    const content = `My Personalized Learning Pathway\nGenerated on: ${new Date().toLocaleDateString()}\n\n--- STATS ---\nTotal Courses: ${data.pathway.pathway.length}\nTotal Hours: ${data.pathway.total_estimated_hours}h\nMatch Score: ${Math.round(data.match_score * 100)}%\n\n--- COURSES ---\n${data.pathway.pathway.map((c, i) => `\n${i + 1}. ${c.display_name} (${c.estimated_hours}h) - ${c.category}\n   ${c.resources && c.resources.length > 0 ? "Resources:\n   " + c.resources.map(r => `• ${r.name}: ${r.url}`).join("\n   ") : "No resources attached."}`).join("")}`;
+    const courses = data.pathway.pathway;
+    const lines = [
+      "=== MY PERSONALIZED LEARNING PATHWAY ===",
+      `Generated: ${new Date().toLocaleDateString()}`,
+      "",
+      "=== SUMMARY ===",
+      `Total Courses: ${courses.length}`,
+      `Total Hours: ${data.pathway.total_estimated_hours}h`,
+      `Courses Skipped: ${data.pathway.courses_skipped} (already in your skillset)`,
+      `Role Match Score: ${Math.round(data.match_score * 100)}%`,
+      "",
+      "=== IDENTIFIED SKILL GAPS ===",
+      ...data.skill_gaps.map((g: any) => `- ${g.skill || g.catalog_skill}`),
+      "",
+      "=== YOUR LEARNING PATHWAY ===",
+      ...courses.map((c: any, i: number) => [
+        `${i+1}. ${c.display_name}`,
+        `   Category: ${c.category} | Level: ${c.level} | Time: ${c.estimated_hours}h`,
+        `   ${c.description}`,
+        c.resources?.length > 0 
+          ? `   Resources: ${c.resources.map((r: any) => r.name + " - " + r.url).join(", ")}`
+          : "",
+        ""
+      ].join("\n")),
+      "=== AI REASONING ===",
+      data.reasoning_trace || "No reasoning available",
+      "",
+      "Generated by AI-Adaptive Onboarding Engine"
+    ].join("\n");
 
-    const blob = new Blob([content], { type: "text/plain" });
+    const blob = new Blob([lines], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = "my-learning-pathway.txt";
-    document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
@@ -95,8 +152,6 @@ export default function RoadmapPage() {
                       <div className="h-5 w-16 bg-gray-700/50 rounded-full"></div>
                       <div className="h-5 w-16 bg-gray-700/50 rounded-full"></div>
                     </div>
-                    <div className="h-3 bg-gray-700/50 rounded w-full mb-2"></div>
-                    <div className="h-3 bg-gray-700/50 rounded w-2/3"></div>
                   </div>
                 </div>
               ))}
@@ -125,108 +180,205 @@ export default function RoadmapPage() {
     );
   }
 
+  const matchPercent = Math.round(data.match_score * 100);
+  const isAboveAvg = matchPercent > 42;
+  const savedModules = 40 - data.pathway.total_courses;
+  const savedHours = 400 - data.pathway.total_estimated_hours;
+
   return (
-    <div className="min-h-screen bg-[#0A0F1E] text-white font-sans py-12 px-6">
+    <div className="min-h-screen bg-[#0A0F1E] text-white font-sans py-12 px-6 tracking-wide">
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-green-500/90 text-white px-5 py-3 rounded-xl shadow-lg animate-slide-in-right">
+          {toastMessage}
+        </div>
+      )}
+
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold mb-2">Your Learning Pathway</h1>
             <p className="text-gray-400 text-sm">
               Personalized roadmap generated by AI based on your resume and job description
             </p>
           </div>
-          <button
-            onClick={handleExport}
-            className="w-fit bg-[#2E86AB] hover:bg-[#2E86AB]/80 text-white text-sm px-4 py-2 rounded-lg flex items-center gap-2 transition-all shadow-lg"
-          >
-            <Download size={16} />
-            Export Pathway
-          </button>
-        </div>
-
-        {/* Stats Bar */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-          <div className="bg-gradient-to-br from-[#1A2035] to-[#151D30] rounded-xl p-4 border border-gray-700/50 shadow-md">
-            <div className="flex items-center gap-2 mb-1">
-              <Book size={14} className="text-gray-400" />
-              <p className="text-xs text-gray-400">Total Courses</p>
-            </div>
-            <p className="text-2xl font-bold text-[#2E86AB] mb-1">
-              {data?.pathway?.pathway?.length ?? 0}
-            </p>
-            <p className="text-[10px] text-gray-500 uppercase tracking-wider">in your pathway</p>
-          </div>
-          <div className="bg-gradient-to-br from-[#1A2035] to-[#151D30] rounded-xl p-4 border border-gray-700/50 shadow-md">
-            <div className="flex items-center gap-2 mb-1">
-              <Clock size={14} className="text-gray-400" />
-              <p className="text-xs text-gray-400">Total Hours</p>
-            </div>
-            <p className="text-2xl font-bold text-[#F18F01] mb-1">
-              {data?.pathway?.total_estimated_hours ?? 0}h
-            </p>
-            <p className="text-[10px] text-gray-500 uppercase tracking-wider">estimated</p>
-          </div>
-          <div className="bg-gradient-to-br from-[#1A2035] to-[#151D30] rounded-xl p-4 border border-gray-700/50 shadow-md">
-            <div className="flex items-center gap-2 mb-1">
-              <Zap size={14} className="text-gray-400" />
-              <p className="text-xs text-gray-400">Courses Skipped</p>
-            </div>
-            <p className="text-2xl font-bold text-green-400 mb-1">
-              {data?.pathway?.courses_skipped ?? 0}
-            </p>
-            <p className="text-[10px] text-gray-500 uppercase tracking-wider">already mastered</p>
-          </div>
-          <div className="bg-gradient-to-br from-[#1A2035] to-[#151D30] rounded-xl p-4 border border-gray-700/50 shadow-md">
-             <div className="flex items-center gap-2 mb-1">
-               <Target size={14} className="text-gray-400" />
-               <p className="text-xs text-gray-400">Role Match</p>
-             </div>
-             <p className="text-2xl font-bold text-purple-400 mb-1">
-               {Math.round((data?.match_score ?? 0) * 100)}%
-             </p>
-             <div className="w-full bg-gray-800 rounded-full h-1.5 mb-2 mt-2 overflow-hidden">
-               <div
-                 className="h-1.5 rounded-full bg-gradient-to-r from-[#2E86AB] to-[#F18F01] transition-all duration-1000 ease-out"
-                 style={{ width: `${progressWidth}%` }}
-               />
-             </div>
-             <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-1">compatibility</p>
+          <div className="flex gap-2 flex-wrap">
+            <button
+              onClick={() => router.push("/history")}
+              className="bg-[#1A2035] hover:bg-[#2E86AB]/20 border border-gray-700 hover:border-[#2E86AB]/50 text-white text-sm px-4 py-2 rounded-lg transition-all"
+            >
+              History
+            </button>
+            <button
+              onClick={handleShare}
+              className="bg-[#1A2035] hover:bg-[#2E86AB]/20 border border-gray-700 hover:border-[#2E86AB]/50 text-white text-sm px-4 py-2 rounded-lg flex items-center gap-2 transition-all"
+            >
+              <Share2 size={16} /> Share
+            </button>
+            <button
+              onClick={handleExport}
+              className="bg-[#2E86AB] hover:bg-[#2E86AB]/80 text-white text-sm px-4 py-2 rounded-lg flex items-center gap-2 transition-all shadow-lg"
+            >
+              <Download size={16} /> Export Pathway
+            </button>
           </div>
         </div>
 
-        {/* Skill Gaps */}
-        {data?.skill_gaps && data.skill_gaps.length > 0 && (
-          <div className="mb-10">
-            <p className="text-sm text-gray-400 mb-3">Identified Skill Gaps</p>
-            <div className="flex flex-wrap gap-2">
-              {data.skill_gaps.map((gap, i) => (
-                <span
-                  key={i}
-                  className="bg-red-500/10 text-red-300 border border-red-500/20 rounded-full text-xs px-3 py-1"
-                >
-                  {gap.skill}
-                </span>
-              ))}
+        {/* Before vs After Banner */}
+        <div className="w-full bg-gradient-to-r from-[#1A2035] to-[#151D30] border border-[#2E86AB]/20 rounded-2xl p-6 mb-8 animate-fade-in delay-300 opacity-0 fill-mode-forwards">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-6">
+            <div className="flex-1 flex flex-col items-center">
+              <span className="text-red-400 font-semibold mb-3">WITHOUT AI Onboarding</span>
+              <div className="space-y-2 text-sm text-gray-300">
+                <p className="flex items-center gap-2 justify-end"><X size={16} className="text-red-400"/> 40 modules</p>
+                <p className="flex items-center gap-2 justify-end"><X size={16} className="text-red-400"/> 400 hours</p>
+                <p className="flex items-center gap-2 justify-end"><X size={16} className="text-red-400"/> Generic for everyone</p>
+              </div>
             </div>
+            
+            <div className="bg-[#2E86AB] text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-lg flex-shrink-0 shadow-lg shadow-[#2E86AB]/30">
+              VS
+            </div>
+
+            <div className="flex-1 flex flex-col items-center">
+              <span className="text-green-400 font-semibold mb-3">WITH AI Adaptive Onboarding</span>
+              <div className="space-y-2 text-sm text-gray-300">
+                <p className="flex items-center gap-2"><Check size={16} className="text-green-400"/> {data.pathway.total_courses} modules</p>
+                <p className="flex items-center gap-2"><Check size={16} className="text-green-400"/> {data.pathway.total_estimated_hours} hours</p>
+                <p className="flex items-center gap-2"><Check size={16} className="text-green-400"/> Personalized for YOU</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="w-full bg-[#2E86AB]/10 rounded-xl p-3 mt-2 text-center border border-[#2E86AB]/20">
+            <p className="text-[#2E86AB] font-semibold">
+              🎉 You save approximately {savedModules > 0 ? savedModules : 0} modules and {savedHours > 0 ? savedHours : 0} hours compared to generic onboarding
+            </p>
+          </div>
+        </div>
+
+        {/* Skill Gap Chart */}
+        {data.skill_gaps && data.skill_gaps.length > 0 && (
+          <div className="mb-8 w-full">
+            <SkillGapChart scoreMap={Object.fromEntries(
+              data.skill_gaps.map(g => [g.skill, g.gap_relevance ?? g.gap_score ?? 0.5])
+            )} />
           </div>
         )}
 
+        {/* Stats Bar */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+          <div className="bg-[#1A2035] rounded-xl p-4 border border-gray-700/50 shadow-md">
+            <div className="flex items-center gap-2 mb-1 text-gray-400 text-xs">
+              <Book size={14} /> Total Courses
+            </div>
+            <p className="text-2xl font-bold text-[#2E86AB] mb-1">{data.pathway.total_courses}</p>
+            <p className="text-[10px] text-gray-500 uppercase tracking-wider">in your pathway</p>
+          </div>
+          
+          <div className="bg-[#1A2035] rounded-xl p-4 border border-gray-700/50 shadow-md">
+            <div className="flex items-center gap-2 mb-1 text-gray-400 text-xs">
+              <Clock size={14} /> Total Hours
+            </div>
+            <p className="text-2xl font-bold text-[#F18F01] mb-1">{data.pathway.total_estimated_hours}h</p>
+            <p className="text-[10px] text-gray-500 uppercase tracking-wider">estimated</p>
+          </div>
+          
+          <div className="bg-[#1A2035] rounded-xl p-4 border border-gray-700/50 shadow-md">
+            <div className="flex items-center gap-2 mb-1 text-gray-400 text-xs">
+              <Zap size={14} /> Courses Skipped
+            </div>
+            <p className="text-2xl font-bold text-green-400 mb-1">{data.pathway.courses_skipped}</p>
+            <p className="text-[10px] text-gray-500 uppercase tracking-wider">already mastered</p>
+          </div>
+          
+          <div className="bg-[#1A2035] rounded-xl p-4 border border-gray-700/50 shadow-md flex items-center justify-between relative overflow-hidden">
+            <div>
+              <div className="flex items-center gap-2 text-gray-400 text-xs mb-3">
+                <Target size={14} /> Role Match
+              </div>
+              {isAboveAvg ? (
+                <span className="bg-green-500/10 border border-green-500/20 text-green-400 text-xs px-2 py-1 rounded-full flex items-center gap-1 w-max">
+                  ↑ Above Avg
+                </span>
+              ) : (
+                <span className="bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs px-2 py-1 rounded-full flex items-center gap-1 w-max">
+                  ↓ Below Avg
+                </span>
+              )}
+              <p className="text-[10px] text-gray-500 mt-2">vs 42% avg candidate</p>
+            </div>
+            <div className="w-16 h-16 ml-auto">
+              <MatchScoreRing score={matchPercent} size={64} />
+            </div>
+          </div>
+        </div>
+
+        {/* View Toggles */}
+        <div className="flex gap-4 mb-6">
+          <button
+            onClick={() => setViewMode("timeline")}
+            className={`px-4 py-2 text-sm rounded-lg border transition-all ${
+              viewMode === "timeline" ? "bg-[#2E86AB] text-white border-[#2E86AB]" : "bg-[#1A2035] text-gray-400 hover:text-white border-[#2E86AB]/30"
+            }`}
+          >
+            Timeline View
+          </button>
+          <button
+            onClick={() => setViewMode("weekly")}
+            className={`px-4 py-2 text-sm rounded-lg border transition-all ${
+              viewMode === "weekly" ? "bg-[#2E86AB] text-white border-[#2E86AB]" : "bg-[#1A2035] text-gray-400 hover:text-white border-[#2E86AB]/30"
+            }`}
+          >
+            Weekly View
+          </button>
+        </div>
+
         {/* Main Content */}
         <div className="flex flex-col lg:flex-row gap-8 relative">
-          {/* Left: Timeline */}
           <div className="flex-1">
-            <RoadmapTimeline courses={data?.pathway?.pathway ?? []} />
+            {viewMode === "timeline" ? (
+              <RoadmapTimeline 
+                courses={data.pathway.pathway} 
+                onCompletionChange={(count, total) => setCompletedCount(count)}
+              />
+            ) : (
+              <WeeklyTimeline courses={data.pathway.pathway} />
+            )}
           </div>
 
-          {/* Right: Reasoning Trace */}
-          {data?.reasoning_trace && (
+          {data.reasoning_trace && (
             <div className="w-full lg:w-80">
               <ReasoningTrace trace={data.reasoning_trace} />
             </div>
           )}
         </div>
       </div>
+      <style dangerouslySetInlineStyle={{__html: `
+        @keyframes fade-in {
+          0% { opacity: 0; transform: translateY(-10px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.5s ease-out forwards;
+        }
+        .delay-300 { animation-delay: 300ms; }
+        .fill-mode-forwards { animation-fill-mode: forwards; }
+        @keyframes slide-in-right {
+          0% { transform: translateX(100%); opacity: 0; }
+          100% { transform: translateX(0); opacity: 1; }
+        }
+        .animate-slide-in-right {
+          animation: slide-in-right 0.3s ease-out forwards;
+        }
+      `}} />
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#0A0F1E]" />}>
+      <RoadmapContent />
+    </Suspense>
   );
 }

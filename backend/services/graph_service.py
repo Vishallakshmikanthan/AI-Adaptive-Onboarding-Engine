@@ -15,6 +15,8 @@ def build_course_graph(catalog: list) -> nx.DiGraph:
             level=course.get("level", "beginner"),
             category=course.get("category", "fundamentals"),
             description=course.get("description", ""),
+            resources=course.get("resources", []),
+            prerequisites=course.get("prerequisites", []),
         )
 
     for course in catalog:
@@ -96,6 +98,8 @@ def generate_adaptive_pathway(
             "estimated_hours": hours,
             "category": node.get("category", "fundamentals"),
             "description": node.get("description", ""),
+            "resources": node.get("resources", []),
+            "prerequisites": node.get("prerequisites", []),
             "order": order,
             "gap_relevance": gap_map.get(course_id, 0.0),
         })
