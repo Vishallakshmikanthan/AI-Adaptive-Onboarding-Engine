@@ -55,12 +55,13 @@ export default function RoadmapTimeline({ courses, onCompletionChange }: Roadmap
   useEffect(() => {
     if (!courses || courses.length === 0) return;
 
-    courses.forEach((_, index) => {
-      const timer = setTimeout(() => {
+    const timers = courses.map((_, index) => {
+      return setTimeout(() => {
         setVisibleCards((prev) => new Set(prev).add(index));
       }, index * 120);
-      return () => clearTimeout(timer);
     });
+
+    return () => timers.forEach(clearTimeout);
   }, [courses]);
 
   useEffect(() => {
@@ -84,7 +85,7 @@ export default function RoadmapTimeline({ courses, onCompletionChange }: Roadmap
       const next = new Set(prev);
       if (next.has(courseId)) next.delete(courseId);
       else next.add(courseId);
-      localStorage.setItem("completed_courses", JSON.stringify([...next]));
+      localStorage.setItem("completed_courses", JSON.stringify(Array.from(next)));
       return next;
     });
   };

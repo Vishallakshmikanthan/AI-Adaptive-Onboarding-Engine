@@ -511,7 +511,7 @@ export default function UploadPage() {
           </>
         )}
       </div>
-      <style dangerouslySetInlineStyle={{__html: `
+      <style dangerouslySetInnerHTML={{__html: `
         @keyframes slide-in-right {
           0% { transform: translateX(100%); opacity: 0; }
           100% { transform: translateX(0); opacity: 1; }
