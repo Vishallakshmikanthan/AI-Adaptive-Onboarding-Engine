@@ -96,7 +96,55 @@ export default function UploadPage() {
   const [toastMessage, setToastMessage] = useState<string>("");
   const [clickedTemplate, setClickedTemplate] = useState<string>("");
 
+  const [showDemoModal, setShowDemoModal] = useState(false);
+  const [demoLine1, setDemoLine1] = useState("");
+  const [demoLine2, setDemoLine2] = useState("");
+  const [demoPhase, setDemoPhase] = useState<"typing1" | "typing2" | "done" | null>(null);
+
   const router = useRouter();
+
+  const typeText = async (text: string, setter: (t: string) => void) => {
+    for (let i = 0; i <= text.length; i++) {
+      setter(text.slice(0, i));
+      await new Promise(r => setTimeout(r, 20));
+    }
+  };
+
+  const handleWatchDemo = async () => {
+    setShowDemoModal(true);
+    setDemoLine1("");
+    setDemoLine2("");
+    setDemoPhase("typing1");
+
+    await typeText(
+      "Parsing resume: RESUME_INTERNSHIP_VISHAL.pdf\n✓ Found: Python, React, SQL, Git, REST APIs\n✓ Experience: 2 years\n✓ Education: B.E. Computer Science",
+      setDemoLine1
+    );
+
+    setDemoPhase("typing2");
+    await typeText(
+      "Parsing job description: senior_swe_role.pdf\n✓ Required: Java, Machine Learning, Docker\n✓ Required: Kubernetes, AWS, System Design\n✓ Priority gaps identified: 7 skills",
+      setDemoLine2
+    );
+
+    setDemoPhase("done");
+    await new Promise(r => setTimeout(r, 1200));
+
+    setShowDemoModal(false);
+    setDemoPhase(null);
+
+    setResumeText(
+      "John Smith - Software Engineer\nSkills: Python (3 years), JavaScript (2 years), React (2 years), \nSQL (2 years), Git, REST APIs, HTML/CSS\nExperience: Built e-commerce web application, automated data pipelines,\ndeveloped REST APIs for mobile applications\nEducation: B.E. Computer Science, CGPA 8.5\nProjects: Student management system, weather app, chat application"
+    );
+    setResumeFileName("RESUME_INTERNSHIP_VISHAL.pdf");
+    setJdText(
+      "Senior Software Engineer - Job Description\nRequired Skills: Python, Java, Machine Learning, Docker, Kubernetes,\nAWS, CI/CD pipelines, System Design, Microservices Architecture,\nREST API Design, SQL Advanced\nPreferred: Azure, GCP, Terraform, Redis\nExperience: 3+ years in backend development\nRole involves designing scalable distributed systems"
+    );
+    setJdFileName("senior_swe_role.pdf");
+
+    await new Promise(r => setTimeout(r, 500));
+    handleAnalyze();
+  };
 
   const showToast = (message: string) => {
     setToastMessage(message);
@@ -376,6 +424,18 @@ export default function UploadPage() {
           </div>
         ) : (
           <>
+            {/* Watch Live Demo Button */}
+            <div className="w-full mb-8 text-center fade-up fade-up-delay-2">
+              <button
+                onClick={handleWatchDemo}
+                className="w-full h-12 rounded-xl font-[var(--font-syne)] font-bold text-white text-base transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg shadow-[#4F9EF8]/20"
+                style={{ background: "linear-gradient(135deg, #4F9EF8, #7C3AED)" }}
+              >
+                ▶ Watch Live Demo
+              </button>
+              <p className="text-[var(--text-muted)] text-xs mt-2">See how it works in 30 seconds</p>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10 fade-up fade-up-delay-3">
               {/* Resume Upload Zone */}
               <div className="flex flex-col gap-4">
@@ -518,6 +578,44 @@ export default function UploadPage() {
           </>
         )}
       </div>
+      {/* Demo Modal */}
+      {showDemoModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-start justify-center">
+          <div className="card-premium p-8 max-w-lg w-full mx-4 mt-32">
+            <h2 className="font-[var(--font-syne)] font-bold text-xl mb-6 gradient-text">
+              Loading Demo Profile...
+            </h2>
+
+            {/* Terminal Box 1 */}
+            {demoPhase && (
+              <div className="bg-[#0D1117] rounded-xl p-4 font-mono text-xs text-[#10B981] mb-4 min-h-[100px] whitespace-pre-wrap">
+                {demoLine1}
+                {demoPhase === "typing1" && (
+                  <span className="inline-block w-2 h-4 bg-[#10B981] animate-pulse ml-0.5 align-middle" />
+                )}
+              </div>
+            )}
+
+            {/* Terminal Box 2 */}
+            {(demoPhase === "typing2" || demoPhase === "done") && (
+              <div className="bg-[#0D1117] rounded-xl p-4 font-mono text-xs text-[#10B981] mb-4 min-h-[100px] whitespace-pre-wrap">
+                {demoLine2}
+                {demoPhase === "typing2" && (
+                  <span className="inline-block w-2 h-4 bg-[#10B981] animate-pulse ml-0.5 align-middle" />
+                )}
+              </div>
+            )}
+
+            {/* Done button */}
+            {demoPhase === "done" && (
+              <button className="w-full h-12 rounded-xl font-[var(--font-syne)] font-bold text-white text-sm bg-[#10B981] flex items-center justify-center gap-2 animate-pulse">
+                ✓ Demo loaded — Generating Roadmap...
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes slide-in-right {
           0% { transform: translateX(100%); opacity: 0; }
