@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import parse, gap, pathway
+from routers import parse, gap, pathway, ats
 
 app = FastAPI(
     title="AI-Adaptive Onboarding Engine",
@@ -24,6 +24,7 @@ app.add_middleware(
 app.include_router(parse.router, prefix="/api/parse", tags=["Parsing"])
 app.include_router(gap.router, prefix="/api/gap", tags=["Gap"])
 app.include_router(pathway.router, prefix="/api/pathway", tags=["Pathway"])
+app.include_router(ats.router, prefix="/api/ats", tags=["ATS"])
 
 @app.get("/")
 async def root():

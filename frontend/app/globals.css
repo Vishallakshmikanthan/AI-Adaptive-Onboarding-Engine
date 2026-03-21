@@ -123,3 +123,69 @@ body {
   h1, h2, h3 { color: black !important; }
   p, span { color: #333 !important; }
 }
+
+/* ─── Mobile Responsive Fixes ─── */
+@media (max-width: 768px) {
+  .hide-mobile { display: none !important; }
+
+  .roadmap-grid {
+    flex-direction: column !important;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .before-after-grid {
+    gap: 12px !important;
+  }
+
+  .stat-number {
+    font-size: 24px !important;
+  }
+
+  .card-premium {
+    padding: 16px !important;
+  }
+
+  .reasoning-panel-mobile {
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: 400px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  h1 {
+    font-size: clamp(28px, 8vw, 48px) !important;
+  }
+}
+
+/* Smooth page transitions */
+main {
+  animation: fadeUp 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Focus styles for accessibility */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid rgba(79, 158, 248, 0.6);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Prevent layout shift on load */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Better text rendering */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

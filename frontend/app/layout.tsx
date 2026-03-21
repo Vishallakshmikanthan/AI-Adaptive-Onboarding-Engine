@@ -1,7 +1,19 @@
 import type { Metadata } from "next";
 import { Syne, DM_Sans } from "next/font/google";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+import NavLink from "@/components/NavLink";
 import "./globals.css";
+
+const APIHealthIndicator = dynamic(
+  () => import("@/components/APIHealthIndicator"),
+  { ssr: false }
+);
+
+const FeedbackButton = dynamic(
+  () => import("@/components/FeedbackButton"),
+  { ssr: false }
+);
 
 const syne = Syne({
   subsets: ["latin"],
@@ -34,17 +46,14 @@ export default function RootLayout({
               AI Onboarding
             </Link>
             <div className="flex items-center gap-5">
-              <Link href="/compare" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors font-medium">
-                Compare Candidates
-              </Link>
-              <a href="/recruiter"
-                className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors flex items-center gap-1.5">
+              <NavLink href="/compare">Compare Candidates</NavLink>
+              <NavLink href="/recruiter">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B] animate-pulse" />
                 Recruiter Mode
-              </a>
-              <Link href="/history" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors font-medium">
-                History
-              </Link>
+              </NavLink>
+              <NavLink href="/history">History</NavLink>
+              <NavLink href="/ats" badge="NEW">ATS Checker</NavLink>
+              <APIHealthIndicator />
               <a
                 href="https://github.com/Vishallakshmikanthan/AI-Adaptive-Onboarding-Engine"
                 target="_blank"
@@ -59,6 +68,7 @@ export default function RootLayout({
         <div className="pt-14">
           {children}
         </div>
+        <FeedbackButton />
       </body>
     </html>
   );

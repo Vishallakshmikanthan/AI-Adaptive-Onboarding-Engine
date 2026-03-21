@@ -1,5 +1,7 @@
 "use client";
 
+import SkillRadar from '@/components/SkillRadar'
+
 import React, { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import RoadmapTimeline from "@/components/RoadmapTimeline";
@@ -42,22 +44,29 @@ function RoadmapContent() {
 
   useEffect(() => {
     const minDelay = new Promise(resolve => setTimeout(resolve, 800));
-    
+
     const loadData = async () => {
       try {
         if (sessionId) {
-          // If we had an API endpoint: 
-          // const res = await axios.get(`/api/pathway/session/${sessionId}`);
-          // setData(res.data);
-          // For now rely on localstorage if we're simulating the session without full backend support
-          // If it's stored under another API we could fetch it.
+          try {
+            const res = await fetch(
+              `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/pathway/session/${sessionId}`
+            );
+            if (res.ok) {
+              const sessionData = await res.json();
+              setData(sessionData);
+              return;
+            }
+          } catch {
+            // fall through to localStorage
+          }
         }
-        
+
         const raw = localStorage.getItem("pathway_data");
         if (raw) {
           const parsed = JSON.parse(raw);
           setData(parsed);
-          
+
           if (parsed.session_id && !sessionId) {
             window.history.replaceState({}, "", `/roadmap?session=${parsed.session_id}`);
           }
@@ -190,10 +199,10 @@ function RoadmapContent() {
       "",
       "=== YOUR LEARNING PATHWAY ===",
       ...courses.map((c: any, i: number) => [
-        `${i+1}. ${c.display_name}`,
+        `${i + 1}. ${c.display_name}`,
         `   Category: ${c.category} | Level: ${c.level} | Time: ${c.estimated_hours}h`,
         `   ${c.description}`,
-        c.resources?.length > 0 
+        c.resources?.length > 0
           ? `   Resources: ${c.resources.map((r: any) => r.name + " - " + r.url).join(", ")}`
           : "",
         ""
@@ -337,12 +346,12 @@ function RoadmapContent() {
             <div className="flex-1 flex flex-col items-center">
               <span className="text-red-400 font-[var(--font-syne)] font-bold mb-3">WITHOUT AI Onboarding</span>
               <div className="space-y-2 text-sm text-[var(--text-secondary)]">
-                <p className="flex items-center gap-2 justify-end"><X size={16} className="text-red-400"/> 40 modules</p>
-                <p className="flex items-center gap-2 justify-end"><X size={16} className="text-red-400"/> 400 hours</p>
-                <p className="flex items-center gap-2 justify-end"><X size={16} className="text-red-400"/> Generic for everyone</p>
+                <p className="flex items-center gap-2 justify-end"><X size={16} className="text-red-400" /> 40 modules</p>
+                <p className="flex items-center gap-2 justify-end"><X size={16} className="text-red-400" /> 400 hours</p>
+                <p className="flex items-center gap-2 justify-end"><X size={16} className="text-red-400" /> Generic for everyone</p>
               </div>
             </div>
-            
+
             <div className="bg-gradient-to-br from-[#4F9EF8] to-[#7C3AED] text-white rounded-full w-12 h-12 flex items-center justify-center font-[var(--font-syne)] font-bold text-lg flex-shrink-0 shadow-lg shadow-[#4F9EF8]/30">
               VS
             </div>
@@ -350,13 +359,13 @@ function RoadmapContent() {
             <div className="flex-1 flex flex-col items-center">
               <span className="text-[#10B981] font-[var(--font-syne)] font-bold mb-3">WITH AI Adaptive Onboarding</span>
               <div className="space-y-2 text-sm text-[var(--text-secondary)]">
-                <p className="flex items-center gap-2"><Check size={16} className="text-[#10B981]"/> {data.pathway.total_courses} modules</p>
-                <p className="flex items-center gap-2"><Check size={16} className="text-[#10B981]"/> {data.pathway.total_estimated_hours} hours</p>
-                <p className="flex items-center gap-2"><Check size={16} className="text-[#10B981]"/> Personalized for YOU</p>
+                <p className="flex items-center gap-2"><Check size={16} className="text-[#10B981]" /> {data.pathway.total_courses} modules</p>
+                <p className="flex items-center gap-2"><Check size={16} className="text-[#10B981]" /> {data.pathway.total_estimated_hours} hours</p>
+                <p className="flex items-center gap-2"><Check size={16} className="text-[#10B981]" /> Personalized for YOU</p>
               </div>
             </div>
           </div>
-          
+
           <div className="w-full bg-[#4F9EF8]/10 rounded-xl p-3 mt-2 text-center border border-[#4F9EF8]/20">
             <p className="text-[#4F9EF8] font-[var(--font-syne)] font-bold">
               🎉 You save approximately {savedModules > 0 ? savedModules : 0} modules and {savedHours > 0 ? savedHours : 0} hours compared to generic onboarding
@@ -397,13 +406,12 @@ function RoadmapContent() {
                     <span className="text-xs px-3 py-1.5 rounded-full bg-[rgba(239,68,68,0.08)] text-[#EF4444] border border-[rgba(239,68,68,0.15)] flex items-center gap-2 cursor-pointer">
                       {skillName}
                       {demand && (
-                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
-                          demand.level === "hot"
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${demand.level === "hot"
                             ? "bg-[rgba(239,68,68,0.15)] text-[#EF4444]"
                             : demand.level === "high"
-                            ? "bg-[rgba(79,158,248,0.15)] text-[#4F9EF8]"
-                            : "bg-[rgba(16,185,129,0.15)] text-[#10B981]"
-                        }`}>
+                              ? "bg-[rgba(79,158,248,0.15)] text-[#4F9EF8]"
+                              : "bg-[rgba(16,185,129,0.15)] text-[#10B981]"
+                          }`}>
                           {demand.label}
                         </span>
                       )}
@@ -421,7 +429,7 @@ function RoadmapContent() {
         )}
 
         {/* Stats Bar */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10 fade-up fade-up-delay-2">
+        <div className="stats-grid grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10 fade-up fade-up-delay-2">
           <div className="card-premium p-5">
             <div className="flex items-center gap-2 mb-2 text-[var(--text-muted)] text-xs">
               <Book size={14} /> Total Courses
@@ -429,7 +437,7 @@ function RoadmapContent() {
             <p className="stat-number text-3xl text-[#4F9EF8] mb-1"><AnimatedCounter value={data.pathway.total_courses} /></p>
             <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">in your pathway</p>
           </div>
-          
+
           <div className="card-premium p-5">
             <div className="flex items-center gap-2 mb-2 text-[var(--text-muted)] text-xs">
               <Clock size={14} /> Total Hours
@@ -437,7 +445,7 @@ function RoadmapContent() {
             <p className="stat-number text-3xl text-[#F59E0B] mb-1"><AnimatedCounter value={data.pathway.total_estimated_hours} suffix="h" /></p>
             <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">estimated</p>
           </div>
-          
+
           <div className="card-premium p-5">
             <div className="flex items-center gap-2 mb-2 text-[var(--text-muted)] text-xs">
               <Zap size={14} /> Courses Skipped
@@ -445,7 +453,7 @@ function RoadmapContent() {
             <p className="stat-number text-3xl text-[#10B981] mb-1"><AnimatedCounter value={data.pathway.courses_skipped} /></p>
             <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">already mastered</p>
           </div>
-          
+
           <div className="card-premium p-5 flex items-center justify-between relative overflow-hidden">
             <div>
               <div className="flex items-center gap-2 text-[var(--text-muted)] text-xs mb-3">
@@ -488,17 +496,15 @@ function RoadmapContent() {
         <div className="flex gap-4 mb-6 fade-up fade-up-delay-3">
           <button
             onClick={() => setViewMode("timeline")}
-            className={`px-4 py-2 text-sm rounded-2xl border transition-all ${
-              viewMode === "timeline" ? "bg-gradient-to-r from-[#4F9EF8] to-[#7C3AED] text-white border-transparent" : "card-premium text-[var(--text-secondary)] hover:text-white"
-            }`}
+            className={`px-4 py-2 text-sm rounded-2xl border transition-all ${viewMode === "timeline" ? "bg-gradient-to-r from-[#4F9EF8] to-[#7C3AED] text-white border-transparent" : "card-premium text-[var(--text-secondary)] hover:text-white"
+              }`}
           >
             Timeline View
           </button>
           <button
             onClick={() => setViewMode("weekly")}
-            className={`px-4 py-2 text-sm rounded-2xl border transition-all ${
-              viewMode === "weekly" ? "bg-gradient-to-r from-[#4F9EF8] to-[#7C3AED] text-white border-transparent" : "card-premium text-[var(--text-secondary)] hover:text-white"
-            }`}
+            className={`px-4 py-2 text-sm rounded-2xl border transition-all ${viewMode === "weekly" ? "bg-gradient-to-r from-[#4F9EF8] to-[#7C3AED] text-white border-transparent" : "card-premium text-[var(--text-secondary)] hover:text-white"
+              }`}
           >
             Weekly View
           </button>
@@ -539,11 +545,11 @@ function RoadmapContent() {
         )}
 
         {/* Main Content */}
-        <div className="flex flex-col lg:flex-row gap-8 relative">
+        <div className="roadmap-grid flex flex-col lg:flex-row gap-8 relative">
           <div className="flex-1">
             {viewMode === "timeline" ? (
-              <RoadmapTimeline 
-                courses={data.pathway.pathway} 
+              <RoadmapTimeline
+                courses={data.pathway.pathway}
                 onCompletionChange={(count, total) => setCompletedCount(count)}
               />
             ) : (
@@ -552,7 +558,8 @@ function RoadmapContent() {
           </div>
 
           {data.reasoning_trace && (
-            <div className="w-full lg:w-80 no-print" data-reasoning>
+            <div className="reasoning-panel-mobile w-full lg:w-80 no-print" data-reasoning>
+              <SkillRadar resumeSkills={data?.resume_skills || []} />
               <ReasoningTrace trace={data.reasoning_trace} />
             </div>
           )}
@@ -688,7 +695,8 @@ function RoadmapContent() {
         </div>
       </div>
 
-      <style dangerouslySetInnerHTML={{__html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @keyframes spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
