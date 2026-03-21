@@ -1,7 +1,15 @@
 from database.supabase_client import get_supabase
 from datetime import datetime
 
-supabase = get_supabase()
+
+def _get_client():
+    """Lazy Supabase client accessor."""
+    try:
+        return get_supabase()
+    except Exception as e:
+        print(f"Supabase client unavailable: {e}")
+        return None
+
 
 def save_session(
     resume_filename: str,
@@ -13,6 +21,9 @@ def save_session(
     reasoning_trace: str,
     match_score: float
 ) -> str:
+    client = _get_client()
+    if client is None:
+        return None
     try:
         data = {
             "resume_filename": resume_filename,
@@ -27,7 +38,7 @@ def save_session(
             "total_hours": pathway.get("total_estimated_hours", 0),
             "courses_skipped": pathway.get("courses_skipped", 0)
         }
-        result = supabase.table("analysis_sessions").insert(data).execute()
+        result = client.table("analysis_sessions").insert(data).execute()
         session_id = result.data[0]["id"]
         print(f"Session saved: {session_id}")
         return session_id
@@ -36,8 +47,11 @@ def save_session(
         return None
 
 def get_recent_sessions(limit: int = 5) -> list:
+    client = _get_client()
+    if client is None:
+        return []
     try:
-        result = supabase.table("analysis_sessions") \
+        result = client.table("analysis_sessions") \
             .select("id, resume_filename, jd_filename, match_score, total_courses, total_hours, created_at") \
             .order("created_at", desc=True) \
             .limit(limit) \
@@ -48,8 +62,11 @@ def get_recent_sessions(limit: int = 5) -> list:
         return []
 
 def get_session_by_id(session_id: str) -> dict:
+    client = _get_client()
+    if client is None:
+        return None
     try:
-        result = supabase.table("analysis_sessions") \
+        result = client.table("analysis_sessions") \
             .select("*") \
             .eq("id", session_id) \
             .single() \

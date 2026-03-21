@@ -28,12 +28,20 @@ async def parse_resume(file: UploadFile = File(...)):
     content = await file.read()
     filename = file.filename.lower()
     
-    if filename.endswith(".pdf"):
-        extracted_text = extract_text_from_pdf(content)
-    elif filename.endswith(".docx"):
-        extracted_text = extract_text_from_docx(content)
-    else:
-        raise HTTPException(status_code=400, detail="Only PDF and DOCX files are supported")
+    try:
+        if filename.endswith(".pdf"):
+            extracted_text = extract_text_from_pdf(content)
+        elif filename.endswith(".docx"):
+            extracted_text = extract_text_from_docx(content)
+        else:
+            raise HTTPException(status_code=400, detail="Only PDF and DOCX files are supported")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to extract text from resume: {str(e)}")
+    
+    if not extracted_text:
+        raise HTTPException(status_code=422, detail="Could not extract any text from the uploaded file. Please ensure the file is not empty or image-only.")
     
     return {
         "filename": file.filename,
@@ -46,12 +54,20 @@ async def parse_job_description(file: UploadFile = File(...)):
     content = await file.read()
     filename = file.filename.lower()
     
-    if filename.endswith(".pdf"):
-        extracted_text = extract_text_from_pdf(content)
-    elif filename.endswith(".docx"):
-        extracted_text = extract_text_from_docx(content)
-    else:
-        raise HTTPException(status_code=400, detail="Only PDF and DOCX files are supported")
+    try:
+        if filename.endswith(".pdf"):
+            extracted_text = extract_text_from_pdf(content)
+        elif filename.endswith(".docx"):
+            extracted_text = extract_text_from_docx(content)
+        else:
+            raise HTTPException(status_code=400, detail="Only PDF and DOCX files are supported")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to extract text from job description: {str(e)}")
+    
+    if not extracted_text:
+        raise HTTPException(status_code=422, detail="Could not extract any text from the uploaded file. Please ensure the file is not empty or image-only.")
     
     return {
         "filename": file.filename,

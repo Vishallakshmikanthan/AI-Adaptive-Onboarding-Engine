@@ -48,6 +48,16 @@ const ANALYSIS_STEPS = [
   { id: 7, text: "Finalizing your roadmap...", duration: 500 },
 ];
 
+const LOADING_MESSAGES = [
+  "Reading your resume...",
+  "Identifying your skills...",
+  "Analyzing job requirements...",
+  "Computing skill gaps...",
+  "Building your learning graph...",
+  "Optimizing pathway order...",
+  "Almost ready...",
+];
+
 // Icons (Inlined to avoid missing dependencies)
 const UploadIcon = ({ className = "w-6 h-6" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -96,6 +106,7 @@ export default function UploadPage() {
   const [toastMessage, setToastMessage] = useState<string>("");
   const [clickedTemplate, setClickedTemplate] = useState<string>("");
 
+  const [messageIndex, setMessageIndex] = useState(0);
   const [showDemoModal, setShowDemoModal] = useState(false);
   const [demoLine1, setDemoLine1] = useState("");
   const [demoLine2, setDemoLine2] = useState("");
@@ -154,6 +165,7 @@ export default function UploadPage() {
   };
 
   const handleDemo1 = () => {
+    setError("");
     setResumeText("John Smith - Software Engineer\nSkills: Python (3 years), JavaScript (2 years), React (2 years), \nSQL (2 years), Git, REST APIs, HTML/CSS\nExperience: Built e-commerce web application, automated data pipelines,\ndeveloped REST APIs for mobile applications\nEducation: B.E. Computer Science, CGPA 8.5\nProjects: Student management system, weather app, chat application");
     setJdText("Senior Software Engineer - Job Description\nRequired Skills: Python, Java, Machine Learning, Docker, Kubernetes,\nAWS, CI/CD pipelines, System Design, Microservices Architecture,\nREST API Design, SQL Advanced\nPreferred: Azure, GCP, Terraform, Redis\nExperience: 3+ years in backend development\nRole involves designing scalable distributed systems");
     setResumeFileName("sample_swe_resume.txt");
@@ -162,6 +174,7 @@ export default function UploadPage() {
   };
 
   const handleDemo2 = () => {
+    setError("");
     setResumeText("Maria Garcia - Operations Worker\nSkills: Basic computer use, Microsoft Excel (basic), \nCustomer service (3 years), Physical inventory counting,\nCash register operation, Team communication\nExperience: Retail cashier 2 years, General store assistant 1 year,\nHelped with stock taking and shelf arrangement\nEducation: High School Diploma");
     setJdText("Warehouse Operations Supervisor - Job Description\nRequired Skills: Inventory Management, Supply Chain Management,\nTeam Leadership, Safety Protocols, Forklift Operation,\nERP Systems, Quality Management, Microsoft Excel Advanced\nPreferred: Six Sigma certification, SAP experience\nExperience: 2+ years in warehouse or logistics environment\nRole involves supervising a team of 10 warehouse staff");
     setResumeFileName("sample_warehouse_resume.txt");
@@ -170,6 +183,7 @@ export default function UploadPage() {
   };
 
   const handleRoleTemplate = (label: string, jd: string) => {
+    setError("");
     setJdText(jd);
     setJdFileName(label + "_jd.txt");
     setClickedTemplate(label);
@@ -192,7 +206,12 @@ export default function UploadPage() {
       });
       setResumeText(res.data.text);
     } catch (err: any) {
-      setError(err.response?.data?.detail || err.message || "Failed to parse resume.");
+      const detail = err.response?.data?.detail;
+      const status = err.response?.status;
+      let msg = detail || "Failed to parse resume.";
+      if (!detail && status === 500) msg = "Server error while parsing resume. Please try again or use a different file.";
+      if (!detail && !status) msg = "Cannot reach the server. Make sure the backend is running.";
+      setError(msg);
       setResumeFile(null);
       setResumeFileName("");
       setResumeText("");
@@ -216,7 +235,12 @@ export default function UploadPage() {
       setJdText(res.data.text);
       setClickedTemplate("");
     } catch (err: any) {
-      setError(err.response?.data?.detail || err.message || "Failed to parse job description.");
+      const detail = err.response?.data?.detail;
+      const status = err.response?.status;
+      let msg = detail || "Failed to parse job description.";
+      if (!detail && status === 500) msg = "Server error while parsing JD. Please try again or use a different file.";
+      if (!detail && !status) msg = "Cannot reach the server. Make sure the backend is running.";
+      setError(msg);
       setJdFile(null);
       setJdFileName("");
       setJdText("");
@@ -242,6 +266,16 @@ export default function UploadPage() {
     getInputProps: getJDInputProps,
     isDragActive: isJDDragActive,
   } = useDropzone({ ...dropzoneOptions, onDrop: onJdDrop });
+
+  useEffect(() => {
+    if (!loading) return;
+    const interval = setInterval(() => {
+      setMessageIndex(prev =>
+        prev < LOADING_MESSAGES.length - 1 ? prev + 1 : prev
+      );
+    }, 1800);
+    return () => clearInterval(interval);
+  }, [loading]);
 
   useEffect(() => {
     if (loading) {
@@ -271,6 +305,7 @@ export default function UploadPage() {
     if (!resumeText || !jdText) return;
 
     setLoading(true);
+    setMessageIndex(0);
     setError("");
 
     try {
@@ -283,7 +318,13 @@ export default function UploadPage() {
       localStorage.setItem("pathway_data", JSON.stringify(res.data));
       router.push(res.data.session_id ? `/roadmap?session=${res.data.session_id}` : "/roadmap");
     } catch (err: any) {
-      setError(err.response?.data?.detail || err.message || "Failed to analyze data.");
+      const detail = err.response?.data?.detail;
+      const status = err.response?.status;
+      let msg = detail || "Failed to analyze data.";
+      if (!detail && status === 500) msg = "Server error during analysis. Please try again.";
+      if (status === 503) msg = detail || "AI service is temporarily unavailable. Please retry in a few seconds.";
+      if (!detail && !status) msg = "Cannot reach the server. Make sure the backend is running.";
+      setError(msg);
       setLoading(false);
     }
   };
@@ -297,7 +338,7 @@ export default function UploadPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060810] text-[var(--text-primary)] p-6 flex flex-col items-center justify-center font-[var(--font-dm-sans)] tracking-wide relative overflow-hidden">
+    <div className="min-h-screen bg-[#060810] text-[var(--text-primary)] p-6 pt-16 flex flex-col items-center font-[var(--font-dm-sans)] tracking-wide relative overflow-hidden">
       {/* Ambient Glow Orbs */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -left-40 w-[500px] h-[500px] rounded-full bg-[#4F9EF8]/[0.06] blur-[120px]" />
@@ -367,7 +408,15 @@ export default function UploadPage() {
         {error && (
           <div className="mb-8 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl flex items-start gap-3 text-red-400">
             <AlertCircleIcon className="w-5 h-5 shrink-0 mt-0.5" />
-            <p className="text-sm">{error}</p>
+            <div className="flex-1">
+              <p className="text-sm">{error}</p>
+              <button
+                onClick={() => { setError(""); if (resumeText && jdText) handleAnalyze(); }}
+                className="mt-2 text-xs underline hover:text-red-300 transition-colors"
+              >
+                Retry
+              </button>
+            </div>
           </div>
         )}
 
@@ -567,7 +616,16 @@ export default function UploadPage() {
                     min-w-[280px] hover:scale-105 active:scale-95
                   `}
                 >
-                  Analyze & Build Roadmap
+                  {loading ? (
+                    <div className="flex items-center justify-center gap-3">
+                      <div className="w-4 h-4 border-2 border-[#060810]/30 border-t-[#060810] rounded-full animate-spin" />
+                      <span className="transition-all duration-500">
+                        {LOADING_MESSAGES[messageIndex]}
+                      </span>
+                    </div>
+                  ) : (
+                    "Analyze & Build Roadmap \u2192"
+                  )}
                 </button>
               ) : (
                 <div className="text-[var(--text-muted)] text-sm mt-4 tracking-wide">

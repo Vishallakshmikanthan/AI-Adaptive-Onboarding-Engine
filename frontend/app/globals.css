@@ -96,3 +96,30 @@ body {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
+
+@media print {
+  .no-print { display: none !important; }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .card-premium {
+    background: white !important;
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+
+  .gradient-text {
+    -webkit-text-fill-color: black !important;
+    background: none !important;
+    color: black !important;
+  }
+
+  .fixed { position: static !important; }
+
+  h1, h2, h3 { color: black !important; }
+  p, span { color: #333 !important; }
+}

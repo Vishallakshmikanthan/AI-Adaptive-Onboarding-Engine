@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ChevronDown, Book, Link as LinkIcon, Clock, ExternalLink, Check } from "lucide-react";
+import SKILL_DEMAND from "@/data/skillDemand";
 
 interface Resource {
   name: string;
@@ -111,6 +112,29 @@ export default function RoadmapTimeline({ courses, onCompletionChange }: Roadmap
 
   const completionPercent = courses.length > 0 ? (completed.size / courses.length) * 100 : 0;
 
+  const getDifficultyDots = (level: string) => {
+    const map: Record<string, number> = {
+      beginner: 2,
+      intermediate: 3,
+      advanced: 5
+    };
+    const filled = map[level] || 2;
+    return Array(5).fill(null).map((_, i) => (
+      <span
+        key={i}
+        className={`w-1.5 h-1.5 rounded-full transition-colors ${
+          i < filled
+            ? level === "advanced"
+              ? "bg-[#EF4444]"
+              : level === "intermediate"
+              ? "bg-[#F59E0B]"
+              : "bg-[#10B981]"
+            : "bg-[rgba(255,255,255,0.1)]"
+        }`}
+      />
+    ));
+  };
+
   return (
     <div className="relative w-full">
       {/* Completion Summary Bar */}
@@ -188,9 +212,26 @@ export default function RoadmapTimeline({ courses, onCompletionChange }: Roadmap
                   <span className={`text-xs px-3 py-1 rounded-full border ${catColor}`}>
                     {course.category}
                   </span>
+                  {(() => {
+                    const demand = SKILL_DEMAND[course.display_name] || SKILL_DEMAND[course.category];
+                    return demand ? (
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1
+                        ${demand.level === "hot"
+                          ? "bg-[rgba(239,68,68,0.15)] text-[#EF4444]"
+                          : demand.level === "high"
+                          ? "bg-[rgba(79,158,248,0.15)] text-[#4F9EF8]"
+                          : "bg-[rgba(16,185,129,0.15)] text-[#10B981]"
+                        }`}>
+                        {demand.label} <span className="opacity-70">{demand.trend}</span>
+                      </span>
+                    ) : null;
+                  })()}
                   <span className={`text-xs px-3 py-1 rounded-full ${lvlColor}`}>
                     {course.level}
                   </span>
+                  <div className="flex items-center gap-1 ml-1">
+                    {getDifficultyDots(course.level)}
+                  </div>
                   <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-[#F59E0B]/15 text-[#F59E0B]">
                     <Clock size={12} />
                     {course.estimated_hours}h
