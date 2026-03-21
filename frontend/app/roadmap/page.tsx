@@ -7,6 +7,7 @@ import ReasoningTrace from "@/components/ReasoningTrace";
 import SkillGapChart from "@/components/SkillGapChart";
 import MatchScoreRing from "@/components/MatchScoreRing";
 import WeeklyTimeline from "@/components/WeeklyTimeline";
+import SkillGraph from "@/components/SkillGraph";
 import { Download, Book, Clock, Zap, Target, Share2, X, Check } from "lucide-react";
 import confetti from "canvas-confetti";
 import axios from "axios";
@@ -267,6 +268,17 @@ function RoadmapContent() {
             <SkillGapChart scoreMap={Object.fromEntries(
               data.skill_gaps.map(g => [g.skill, g.gap_relevance ?? g.gap_score ?? 0.5])
             )} />
+          </div>
+        )}
+
+        {/* Skill Graph */}
+        {data.skill_gaps && data.skill_gaps.length > 0 && (
+          <div className="w-full mb-6 fade-up fade-up-delay-2">
+            <SkillGraph
+              resumeSkills={(data as any).resume_skills || data.skill_gaps.filter(g => (g.gap_relevance ?? g.gap_score ?? 0.5) < 0.3).map(g => ({ skill: g.skill, level: "known" }))}
+              jdSkills={data.skill_gaps.map(g => ({ skill: g.skill, priority: (g.gap_relevance ?? g.gap_score ?? 0.5) > 0.7 ? "high" : "medium" }))}
+              gaps={data.skill_gaps.map(g => ({ skill: g.skill, gap_severity: g.gap_relevance ?? g.gap_score ?? 0.5 }))}
+            />
           </div>
         )}
 
