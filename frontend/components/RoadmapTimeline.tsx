@@ -27,12 +27,21 @@ interface RoadmapTimelineProps {
 }
 
 const categoryColors: Record<string, string> = {
-  programming: "bg-blue-500/20 text-blue-300 border-blue-500/30",
-  data: "bg-purple-500/20 text-purple-300 border-purple-500/30",
-  cloud: "bg-cyan-500/20 text-cyan-300 border-cyan-500/30",
-  leadership: "bg-orange-500/20 text-orange-300 border-orange-500/30",
-  operations: "bg-green-500/20 text-green-300 border-green-500/30",
-  fundamentals: "bg-gray-500/20 text-gray-300 border-gray-500/30",
+  programming: "bg-[#4F9EF8]/15 text-[#4F9EF8] border-[#4F9EF8]/30",
+  data: "bg-[#7C3AED]/15 text-[#7C3AED] border-[#7C3AED]/30",
+  cloud: "bg-[#06B6D4]/15 text-[#06B6D4] border-[#06B6D4]/30",
+  leadership: "bg-[#F59E0B]/15 text-[#F59E0B] border-[#F59E0B]/30",
+  operations: "bg-[#10B981]/15 text-[#10B981] border-[#10B981]/30",
+  fundamentals: "bg-[#8892A4]/15 text-[#8892A4] border-[#8892A4]/30",
+};
+
+const categoryBorderColors: Record<string, string> = {
+  programming: "border-l-[#4F9EF8]",
+  data: "border-l-[#7C3AED]",
+  cloud: "border-l-[#06B6D4]",
+  leadership: "border-l-[#F59E0B]",
+  operations: "border-l-[#10B981]",
+  fundamentals: "border-l-[#8892A4]",
 };
 
 const levelColors: Record<string, string> = {
@@ -107,18 +116,18 @@ export default function RoadmapTimeline({ courses, onCompletionChange }: Roadmap
       {/* Completion Summary Bar */}
       <div className="mb-8 w-full">
         <div className="flex justify-between items-center text-sm mb-2">
-          <span className="text-gray-300 font-medium">{completed.size} of {courses.length} courses completed</span>
-          <span className="text-[#2E86AB] font-bold">{Math.round(completionPercent)}%</span>
+          <span className="text-[var(--text-secondary)] font-medium">{completed.size} of {courses.length} courses completed</span>
+          <span className="text-[#4F9EF8] font-[var(--font-syne)] font-bold">{Math.round(completionPercent)}%</span>
         </div>
-        <div className="bg-gray-700 rounded-full h-2 w-full overflow-hidden">
+        <div className="bg-[var(--bg-elevated)] rounded-full h-2 w-full overflow-hidden">
           <div 
-            className="bg-gradient-to-r from-[#2E86AB] to-green-400 h-full transition-all duration-500"
+            className="bg-gradient-to-r from-[#4F9EF8] to-[#10B981] h-full transition-all duration-500"
             style={{ width: `${completionPercent}%` }}
           />
         </div>
       </div>
 
-      <div className="absolute left-6 top-16 bottom-8 w-0.5 bg-gradient-to-b from-[#2E86AB] to-transparent" />
+      <div className="absolute left-6 top-16 bottom-8 w-0.5 bg-gradient-to-b from-[#4F9EF8]/50 to-transparent" />
 
       <div className="flex flex-col gap-6">
         {courses.map((course, index) => {
@@ -126,6 +135,7 @@ export default function RoadmapTimeline({ courses, onCompletionChange }: Roadmap
           const isExpanded = expandedCards.has(course.id);
           const isCompleted = completed.has(course.id);
           const catColor = categoryColors[course.category] || categoryColors.fundamentals;
+          const catBorder = categoryBorderColors[course.category] || categoryBorderColors.fundamentals;
           const lvlColor = levelColors[course.level] || levelColors.beginner;
 
           let dotColor = "bg-green-500";
@@ -140,20 +150,20 @@ export default function RoadmapTimeline({ courses, onCompletionChange }: Roadmap
               } ${isCompleted ? "opacity-75" : ""}`}
             >
               {/* Step number badge */}
-              <div className={`relative flex-shrink-0 w-12 h-12 rounded-full bg-[#0A0F1E] border-2 flex items-center justify-center z-10 text-sm font-bold ${
-                isCompleted ? "border-green-500 text-green-400" : "border-[#2E86AB] text-[#2E86AB]"
+              <div className={`relative flex-shrink-0 w-12 h-12 rounded-full bg-[var(--bg-base)] border-2 flex items-center justify-center z-10 text-sm font-[var(--font-syne)] font-bold ${
+                isCompleted ? "border-[#10B981] text-[#10B981]" : "border-[#4F9EF8] text-[#4F9EF8]"
               }`}>
                 {index + 1}
                 <div
-                  className={`absolute -right-1 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-[#0A0F1E] ${dotColor} z-20`}
+                  className={`absolute -right-1 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-[var(--bg-base)] ${dotColor} z-20`}
                 />
               </div>
 
               {/* Card body */}
               <div
                 onClick={() => toggleCard(course.id)}
-                className={`flex-1 bg-[#1A2035] border rounded-xl p-4 cursor-pointer transition-all duration-300 hover:shadow-[0_0_20px_rgba(46,134,171,0.15)] relative ${
-                  isCompleted ? "border-green-500/30" : "border-gray-700/50 hover:border-[#2E86AB]/60"
+                className={`flex-1 card-premium border-l-[3px] ${catBorder} p-4 cursor-pointer hover:shadow-[0_0_20px_rgba(79,158,248,0.1)] relative ${
+                  isCompleted ? "!border-[#10B981]/30 border-l-[#10B981]" : ""
                 }`}
               >
                 {/* Complete Checkbox */}
@@ -161,7 +171,7 @@ export default function RoadmapTimeline({ courses, onCompletionChange }: Roadmap
                   <button 
                     onClick={(e) => toggleComplete(course.id, e)}
                     className={`w-7 h-7 rounded-full border-2 flex items-center justify-center transition-colors ${
-                      isCompleted ? "border-green-500 bg-green-500 text-white" : "border-gray-600 bg-transparent hover:border-[#2E86AB]"
+                      isCompleted ? "border-[#10B981] bg-[#10B981] text-white" : "border-[var(--border-default)] bg-transparent hover:border-[#4F9EF8]"
                     }`}
                   >
                     {isCompleted && <Check size={16} strokeWidth={3} />}
@@ -169,7 +179,7 @@ export default function RoadmapTimeline({ courses, onCompletionChange }: Roadmap
                 </div>
 
                 <div className="flex items-start justify-between mb-2 pr-10">
-                  <h3 className={`font-semibold ${isCompleted ? "line-through text-gray-400" : "text-white"}`}>
+                  <h3 className={`font-[var(--font-syne)] font-bold ${isCompleted ? "line-through text-[var(--text-muted)]" : "text-[var(--text-primary)]"}`}>
                     {course.display_name}
                   </h3>
                 </div>
@@ -181,13 +191,13 @@ export default function RoadmapTimeline({ courses, onCompletionChange }: Roadmap
                   <span className={`text-xs px-3 py-1 rounded-full ${lvlColor}`}>
                     {course.level}
                   </span>
-                  <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-[#F18F01]/20 text-[#F18F01]">
+                  <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-[#F59E0B]/15 text-[#F59E0B]">
                     <Clock size={12} />
                     {course.estimated_hours}h
                   </span>
                 </div>
 
-                <p className={`text-sm text-gray-400 ${!isExpanded ? "line-clamp-2" : ""}`}>
+                <p className={`text-sm text-[var(--text-secondary)] ${!isExpanded ? "line-clamp-2" : ""}`}>
                   {course.description}
                 </p>
 
@@ -210,7 +220,7 @@ export default function RoadmapTimeline({ courses, onCompletionChange }: Roadmap
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={(e) => e.stopPropagation()}
-                            className="w-fit flex items-center gap-2 text-xs text-[#2E86AB] hover:text-white bg-[#2E86AB]/10 hover:bg-[#2E86AB]/20 px-3 py-1.5 rounded-lg border border-[#2E86AB]/20 transition-all"
+                            className="w-fit flex items-center gap-2 text-xs text-[#4F9EF8] hover:text-white bg-[#4F9EF8]/10 hover:bg-[#4F9EF8]/20 px-3 py-1.5 rounded-lg border border-[#4F9EF8]/20 transition-all"
                           >
                             {res.name}
                             <ExternalLink size={12} className="ml-1" />

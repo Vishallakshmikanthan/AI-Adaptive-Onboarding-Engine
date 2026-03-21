@@ -249,38 +249,46 @@ export default function UploadPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0F1E] text-white p-6 flex flex-col items-center justify-center font-sans tracking-wide">
+    <div className="min-h-screen bg-[#060810] text-[var(--text-primary)] p-6 flex flex-col items-center justify-center font-[var(--font-dm-sans)] tracking-wide relative overflow-hidden">
+      {/* Ambient Glow Orbs */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -left-40 w-[500px] h-[500px] rounded-full bg-[#4F9EF8]/[0.06] blur-[120px]" />
+        <div className="absolute -bottom-40 -right-40 w-[500px] h-[500px] rounded-full bg-[#7C3AED]/[0.06] blur-[120px]" />
+      </div>
+      {/* Grid Background */}
+      <div className="pointer-events-none absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAyKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-60" />
+
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-green-500/90 text-white px-5 py-3 rounded-xl shadow-lg transition-transform animate-slide-in-right">
+        <div className="fixed bottom-6 right-6 z-50 bg-[#10B981]/90 text-white px-5 py-3 rounded-xl shadow-lg transition-transform animate-slide-in-right backdrop-blur-sm">
           {toastMessage}
         </div>
       )}
 
-      <div className="w-full max-w-5xl">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
+      <div className="w-full max-w-5xl relative z-10">
+        <div className="text-center mb-8 fade-up">
+          <h1 className="text-4xl md:text-5xl font-[var(--font-syne)] font-extrabold mb-4 tracking-tight gradient-text">
             AI-Adaptive Onboarding
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          <p className="text-[var(--text-secondary)] text-lg max-w-2xl mx-auto">
             Upload your resume and the target job description to generate a
             personalized learning roadmap.
           </p>
         </div>
 
         {/* Demo Section */}
-        <div className="mb-8">
-          <h3 className="text-gray-400 text-sm text-center mb-4">Or try with a sample profile</h3>
+        <div className="mb-8 fade-up fade-up-delay-1">
+          <h3 className="text-[var(--text-muted)] text-sm text-center mb-4">Or try with a sample profile</h3>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <button
               onClick={handleDemo1}
-              className="bg-[#1A2035] hover:bg-[#2E86AB]/20 border border-gray-700 hover:border-[#2E86AB]/50 text-white text-sm px-5 py-3 rounded-xl transition-all flex items-center justify-center gap-2"
+              className="card-premium px-5 py-3 text-sm flex items-center justify-center gap-2 hover:border-[#4F9EF8]/30 transition-all"
             >
               🧑‍💻 Software Engineer Demo
             </button>
             <button
               onClick={handleDemo2}
-              className="bg-[#1A2035] hover:bg-[#2E86AB]/20 border border-gray-700 hover:border-[#2E86AB]/50 text-white text-sm px-5 py-3 rounded-xl transition-all flex items-center justify-center gap-2"
+              className="card-premium px-5 py-3 text-sm flex items-center justify-center gap-2 hover:border-[#4F9EF8]/30 transition-all"
             >
               🏭 Warehouse Operations Demo
             </button>
@@ -288,36 +296,36 @@ export default function UploadPage() {
         </div>
 
         {/* Role Templates Section */}
-        <div className="mb-10 max-w-3xl mx-auto">
-          <h3 className="text-gray-400 text-sm text-center mb-3">Quick Role Templates</h3>
+        <div className="mb-10 max-w-3xl mx-auto fade-up fade-up-delay-2">
+          <h3 className="text-[var(--text-muted)] text-sm text-center mb-3">Quick Role Templates</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {ROLE_TEMPLATES.map((tpl) => (
               <button
                 key={tpl.label}
                 onClick={() => handleRoleTemplate(tpl.label, tpl.jd)}
                 className={`
-                  bg-[#1A2035] hover:bg-[#2E86AB]/10 border 
-                  ${clickedTemplate === tpl.label ? "border-[#2E86AB] bg-[#2E86AB]/10" : "border-gray-700/50"} 
-                  hover:border-[#2E86AB]/40 rounded-xl p-3 text-center transition-all flex flex-col items-center
+                  card-premium p-3 text-center flex flex-col items-center
+                  ${clickedTemplate === tpl.label ? "!border-[#4F9EF8] !bg-[#4F9EF8]/10" : ""} 
+                  hover:border-[#4F9EF8]/40
                 `}
               >
                 <div className="text-2xl">{tpl.icon}</div>
-                <div className="text-xs text-gray-300 font-medium mt-1">{tpl.label}</div>
+                <div className="text-xs text-[var(--text-secondary)] font-medium mt-1">{tpl.label}</div>
               </button>
             ))}
           </div>
         </div>
 
         {error && (
-          <div className="mb-8 p-4 bg-red-500/10 border border-red-500/50 rounded-xl flex items-start gap-3 text-red-400">
+          <div className="mb-8 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl flex items-start gap-3 text-red-400">
             <AlertCircleIcon className="w-5 h-5 shrink-0 mt-0.5" />
             <p className="text-sm">{error}</p>
           </div>
         )}
 
         {loading ? (
-          <div className="bg-[#1A2035] rounded-2xl p-6 border border-[#2E86AB]/20 w-full animate-slide-up">
-            <h2 className="text-white font-semibold mb-6">Analyzing your profile...</h2>
+          <div className="card-premium p-6 w-full animate-slide-up shimmer">
+            <h2 className="font-[var(--font-syne)] font-bold text-lg mb-6">Analyzing your profile...</h2>
             <div className="space-y-4">
               {ANALYSIS_STEPS.map((step) => {
                 const isCompleted = completedSteps.includes(step.id);
@@ -368,11 +376,11 @@ export default function UploadPage() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10 fade-up fade-up-delay-3">
               {/* Resume Upload Zone */}
               <div className="flex flex-col gap-4">
-                <h2 className="text-xl font-semibold flex items-center gap-3">
-                  <span className="bg-[#2E86AB] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">
+                <h2 className="text-xl font-[var(--font-syne)] font-bold flex items-center gap-3">
+                  <span className="bg-gradient-to-br from-[#4F9EF8] to-[#7C3AED] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">
                     1
                   </span>
                   Resume
@@ -380,13 +388,12 @@ export default function UploadPage() {
                 <div
                   {...getResumeRootProps()}
                   className={`
-                    relative group flex flex-col items-center justify-center p-8 
-                    border-2 border-dashed rounded-2xl transition-all duration-300
-                    bg-[#1A2035] min-h-[250px] cursor-pointer
+                    card-premium relative group flex flex-col items-center justify-center p-8 
+                    border-2 border-dashed min-h-[250px] cursor-pointer transition-all duration-300
                     ${
                       isResumeDragActive
-                        ? "border-[#2E86AB] bg-[#2E86AB]/10 scale-[1.02]"
-                        : "border-gray-600 hover:border-[#2E86AB] hover:bg-[#1A2035]/80"
+                        ? "!border-[#4F9EF8] !bg-[#4F9EF8]/10 scale-[1.02]"
+                        : "border-[var(--border-default)] hover:border-[#4F9EF8]/50"
                     }
                   `}
                 >
@@ -430,8 +437,8 @@ export default function UploadPage() {
 
               {/* Job Description Upload Zone */}
               <div className="flex flex-col gap-4">
-                <h2 className="text-xl font-semibold flex items-center gap-3">
-                  <span className="bg-[#2E86AB] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">
+                <h2 className="text-xl font-[var(--font-syne)] font-bold flex items-center gap-3">
+                  <span className="bg-gradient-to-br from-[#7C3AED] to-[#4F9EF8] text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">
                     2
                   </span>
                   Job Description
@@ -439,13 +446,12 @@ export default function UploadPage() {
                 <div
                   {...getJDRootProps()}
                   className={`
-                    relative group flex flex-col items-center justify-center p-8 
-                    border-2 border-dashed rounded-2xl transition-all duration-300
-                    bg-[#1A2035] min-h-[250px] cursor-pointer
+                    card-premium relative group flex flex-col items-center justify-center p-8 
+                    border-2 border-dashed min-h-[250px] cursor-pointer transition-all duration-300
                     ${
                       isJDDragActive
-                        ? "border-[#2E86AB] bg-[#2E86AB]/10 scale-[1.02]"
-                        : "border-gray-600 hover:border-[#2E86AB] hover:bg-[#1A2035]/80"
+                        ? "!border-[#7C3AED] !bg-[#7C3AED]/10 scale-[1.02]"
+                        : "border-[var(--border-default)] hover:border-[#7C3AED]/50"
                     }
                   `}
                 >
@@ -495,15 +501,16 @@ export default function UploadPage() {
                   onClick={handleAnalyze}
                   className={`
                     flex items-center justify-center gap-3 px-8 py-4 
-                    bg-[#2E86AB] hover:bg-[#236e8e] text-white text-lg font-semibold 
-                    rounded-xl transition-all duration-300 shadow-lg shadow-[#2E86AB]/25
+                    bg-gradient-to-r from-[#4F9EF8] to-[#7C3AED] hover:from-[#4F9EF8]/90 hover:to-[#7C3AED]/90
+                    text-white text-lg font-[var(--font-syne)] font-bold 
+                    rounded-xl transition-all duration-300 shadow-lg shadow-[#4F9EF8]/25
                     min-w-[280px] hover:scale-105 active:scale-95
                   `}
                 >
                   Analyze & Build Roadmap
                 </button>
               ) : (
-                <div className="text-gray-500 text-sm mt-4 tracking-wide">
+                <div className="text-[var(--text-muted)] text-sm mt-4 tracking-wide">
                   Waiting for both text inputs to enable analysis...
                 </div>
               )}

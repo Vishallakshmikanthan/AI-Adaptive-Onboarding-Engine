@@ -65,14 +65,14 @@ export default function ReasoningTrace({ trace }: ReasoningTraceProps) {
         <button
           onClick={() => setIsOpen(true)}
           className="fixed right-0 top-1/2 -translate-y-1/2 z-50
-                     bg-[#2E86AB] text-white px-2 py-4 rounded-l-lg
-                     shadow-lg hover:bg-[#256d8a] transition-colors
+                     bg-gradient-to-b from-[#4F9EF8] to-[#7C3AED] text-white px-2 py-4 rounded-l-lg
+                     shadow-lg hover:shadow-[#4F9EF8]/30 transition-all
                      flex flex-col items-center justify-center gap-2"
         >
           <div className="relative">
-             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+             <div className="w-2 h-2 bg-[#10B981] rounded-full animate-pulse"></div>
           </div>
-          <span className="[writing-mode:vertical-lr] text-sm font-semibold tracking-wide">
+          <span className="[writing-mode:vertical-lr] text-sm font-[var(--font-syne)] font-bold tracking-wide">
             AI Reasoning
           </span>
         </button>
@@ -87,35 +87,35 @@ export default function ReasoningTrace({ trace }: ReasoningTraceProps) {
             exit={{ x: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="fixed right-0 top-0 h-full w-[380px] sm:w-[420px] z-50
-                       bg-[#111827] border-l border-gray-700 shadow-2xl
+                       bg-[var(--bg-surface)] border-l border-[var(--border-subtle)] shadow-2xl
                        flex flex-col"
           >
             {/* Header */}
-            <div className="px-5 py-4 border-b border-gray-700 bg-gradient-to-r from-[#111827] to-[#1A2035]">
+            <div className="px-5 py-4 border-b border-[var(--border-subtle)] bg-gradient-to-r from-[var(--bg-surface)] to-[var(--bg-elevated)]">
               <div className="flex items-start justify-between mb-1">
                 <div className="flex items-center gap-2">
-                  <Brain className="text-[#2E86AB] w-5 h-5" />
-                  <h2 className="text-white font-bold text-lg">
+                  <Brain className="text-[#4F9EF8] w-5 h-5" />
+                  <h2 className="font-[var(--font-syne)] font-bold text-lg text-[var(--text-primary)]">
                     AI Reasoning Trace
                   </h2>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-[10px] bg-[#2E86AB]/10 text-[#2E86AB] px-2 py-0.5 rounded-full font-medium border border-[#2E86AB]/20">
+                  <span className="text-[10px] bg-[#4F9EF8]/10 text-[#4F9EF8] px-2 py-0.5 rounded-full font-medium border border-[#4F9EF8]/20">
                     Powered by OpenRouter
                   </span>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="text-gray-400 hover:text-white transition-colors rounded-full hover:bg-white/10 p-1"
+                    className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors rounded-full hover:bg-white/10 p-1"
                   >
                     <X size={18} />
                   </button>
                 </div>
               </div>
-              <p className="text-sm text-gray-400 ml-7">How the AI analyzed your profile</p>
+              <p className="text-sm text-[var(--text-secondary)] ml-7">How the AI analyzed your profile</p>
             </div>
 
             {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto p-5 scrollbar-thin scrollbar-thumb-[#2E86AB]/30 scrollbar-track-transparent">
+            <div className="flex-1 overflow-y-auto p-5 scrollbar-thin scrollbar-thumb-[#4F9EF8]/30 scrollbar-track-transparent">
               {steps.length > 0 ? (
                 <div className="flex flex-col gap-4">
                   {steps.map((step, index) => (
@@ -124,17 +124,17 @@ export default function ReasoningTrace({ trace }: ReasoningTraceProps) {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.15 + 0.1, duration: 0.4 }}
                       key={index}
-                      className="bg-[#151D30] rounded-xl p-4 border-l-2 border-[#2E86AB] shadow-md relative"
+                      className="bg-[var(--bg-elevated)] rounded-xl p-4 border-l-2 border-[#4F9EF8] shadow-md relative"
                     >
                       <div className="flex items-start gap-3">
-                        <div className="flex-shrink-0 w-7 h-7 bg-[#2E86AB] text-white rounded-full flex items-center justify-center font-bold text-sm shadow-sm">
+                        <div className="flex-shrink-0 w-7 h-7 bg-gradient-to-br from-[#4F9EF8] to-[#7C3AED] text-white rounded-full flex items-center justify-center font-[var(--font-syne)] font-bold text-sm shadow-sm">
                           {step.number}
                         </div>
                         <div className="flex-1 pt-0.5">
-                          <h3 className="font-semibold text-white text-sm">
+                          <h3 className="font-[var(--font-syne)] font-bold text-[var(--text-primary)] text-sm">
                             {step.title}
                           </h3>
-                          <p className="text-xs text-gray-300 leading-relaxed mt-1.5 break-words">
+                          <p className="text-xs text-[var(--text-secondary)] leading-relaxed mt-1.5 break-words">
                             {step.explanation}
                           </p>
                         </div>
@@ -147,10 +147,10 @@ export default function ReasoningTrace({ trace }: ReasoningTraceProps) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: steps.length * 0.15 + 0.3 }}
-                    className="mt-2 bg-[#2E86AB]/10 border border-[#2E86AB]/20 rounded-xl p-3 flex items-start gap-3"
+                    className="mt-2 bg-[#4F9EF8]/10 border border-[#4F9EF8]/20 rounded-xl p-3 flex items-start gap-3"
                   >
-                    <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                    <p className="text-xs text-gray-300 leading-relaxed">
+                    <CheckCircle2 className="w-5 h-5 text-[#10B981] flex-shrink-0 mt-0.5" />
+                    <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
                       Analysis complete. Your personalized pathway has been generated based on the above reasoning.
                     </p>
                   </motion.div>

@@ -132,31 +132,31 @@ function RoadmapContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A0F1E] py-12 px-6">
+      <div className="min-h-screen bg-[#060810] py-12 px-6">
         <div className="max-w-6xl mx-auto flex flex-col gap-6">
-          <div className="h-10 bg-gray-700/50 rounded w-1/3 animate-pulse mb-6"></div>
+          <div className="h-10 bg-[var(--bg-elevated)] rounded w-1/3 animate-pulse mb-6"></div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-28 bg-[#1A2035] rounded-xl animate-pulse"></div>
+              <div key={i} className="h-28 bg-[var(--bg-surface)] rounded-xl animate-pulse"></div>
             ))}
           </div>
           <div className="flex gap-8">
             <div className="flex-1 flex flex-col gap-6">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="bg-[#1A2035] rounded-xl p-4 flex gap-4 animate-pulse">
-                  <div className="w-12 h-12 bg-gray-700/50 rounded-full flex-shrink-0"></div>
+                <div key={i} className="bg-[var(--bg-surface)] rounded-xl p-4 flex gap-4 animate-pulse">
+                  <div className="w-12 h-12 bg-[var(--bg-elevated)] rounded-full flex-shrink-0"></div>
                   <div className="flex-1">
-                    <div className="h-4 bg-gray-700/50 rounded w-3/4 mb-3"></div>
+                    <div className="h-4 bg-[var(--bg-elevated)] rounded w-3/4 mb-3"></div>
                     <div className="flex gap-2 mb-3">
-                      <div className="h-5 w-16 bg-gray-700/50 rounded-full"></div>
-                      <div className="h-5 w-16 bg-gray-700/50 rounded-full"></div>
-                      <div className="h-5 w-16 bg-gray-700/50 rounded-full"></div>
+                      <div className="h-5 w-16 bg-[var(--bg-elevated)] rounded-full"></div>
+                      <div className="h-5 w-16 bg-[var(--bg-elevated)] rounded-full"></div>
+                      <div className="h-5 w-16 bg-[var(--bg-elevated)] rounded-full"></div>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="hidden lg:block w-80 h-96 bg-[#1A2035] rounded-xl animate-pulse"></div>
+            <div className="hidden lg:block w-80 h-96 bg-[var(--bg-surface)] rounded-xl animate-pulse"></div>
           </div>
         </div>
       </div>
@@ -165,14 +165,14 @@ function RoadmapContent() {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-[#0A0F1E] flex flex-col items-center justify-center text-white p-6 text-center">
-        <h2 className="text-2xl font-bold mb-3">No analysis data found</h2>
-        <p className="text-gray-400 mb-6">
+      <div className="min-h-screen bg-[#060810] flex flex-col items-center justify-center text-[var(--text-primary)] p-6 text-center">
+        <h2 className="text-2xl font-[var(--font-syne)] font-bold mb-3">No analysis data found</h2>
+        <p className="text-[var(--text-secondary)] mb-6">
           Please upload your resume and job description first to generate a pathway.
         </p>
         <a
           href="/"
-          className="px-6 py-3 bg-[#2E86AB] hover:bg-[#236e8e] transition-colors rounded-xl font-medium"
+          className="px-6 py-3 bg-gradient-to-r from-[#4F9EF8] to-[#7C3AED] hover:from-[#4F9EF8]/90 hover:to-[#7C3AED]/90 transition-all rounded-xl font-[var(--font-syne)] font-bold"
         >
           Go to Home
         </a>
@@ -186,37 +186,42 @@ function RoadmapContent() {
   const savedHours = 400 - data.pathway.total_estimated_hours;
 
   return (
-    <div className="min-h-screen bg-[#0A0F1E] text-white font-sans py-12 px-6 tracking-wide">
+    <div className="min-h-screen bg-[#060810] text-[var(--text-primary)] font-[var(--font-dm-sans)] py-12 px-6 tracking-wide relative overflow-hidden">
+      {/* Ambient Glow Orbs */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -left-40 w-[500px] h-[500px] rounded-full bg-[#4F9EF8]/[0.06] blur-[120px]" />
+        <div className="absolute -bottom-40 -right-40 w-[500px] h-[500px] rounded-full bg-[#7C3AED]/[0.06] blur-[120px]" />
+      </div>
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-green-500/90 text-white px-5 py-3 rounded-xl shadow-lg animate-slide-in-right">
+        <div className="fixed bottom-6 right-6 z-50 bg-[#10B981]/90 text-white px-5 py-3 rounded-xl shadow-lg animate-slide-in-right backdrop-blur-sm">
           {toastMessage}
         </div>
       )}
 
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="max-w-6xl mx-auto relative z-10">
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 fade-up">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Your Learning Pathway</h1>
-            <p className="text-gray-400 text-sm">
+            <h1 className="text-3xl font-[var(--font-syne)] font-extrabold mb-2 gradient-text">Your Learning Pathway</h1>
+            <p className="text-[var(--text-secondary)] text-sm">
               Personalized roadmap generated by AI based on your resume and job description
             </p>
           </div>
           <div className="flex gap-2 flex-wrap">
             <button
               onClick={() => router.push("/history")}
-              className="bg-[#1A2035] hover:bg-[#2E86AB]/20 border border-gray-700 hover:border-[#2E86AB]/50 text-white text-sm px-4 py-2 rounded-lg transition-all"
+              className="card-premium text-sm px-4 py-2 hover:border-[#4F9EF8]/30 transition-all"
             >
               History
             </button>
             <button
               onClick={handleShare}
-              className="bg-[#1A2035] hover:bg-[#2E86AB]/20 border border-gray-700 hover:border-[#2E86AB]/50 text-white text-sm px-4 py-2 rounded-lg flex items-center gap-2 transition-all"
+              className="card-premium text-sm px-4 py-2 flex items-center gap-2 hover:border-[#4F9EF8]/30 transition-all"
             >
               <Share2 size={16} /> Share
             </button>
             <button
               onClick={handleExport}
-              className="bg-[#2E86AB] hover:bg-[#2E86AB]/80 text-white text-sm px-4 py-2 rounded-lg flex items-center gap-2 transition-all shadow-lg"
+              className="bg-gradient-to-r from-[#4F9EF8] to-[#7C3AED] hover:from-[#4F9EF8]/90 hover:to-[#7C3AED]/90 text-white text-sm px-4 py-2 rounded-2xl flex items-center gap-2 transition-all shadow-lg"
             >
               <Download size={16} /> Export Pathway
             </button>
@@ -224,33 +229,33 @@ function RoadmapContent() {
         </div>
 
         {/* Before vs After Banner */}
-        <div className="w-full bg-gradient-to-r from-[#1A2035] to-[#151D30] border border-[#2E86AB]/20 rounded-2xl p-6 mb-8 animate-fade-in delay-300 opacity-0 fill-mode-forwards">
+        <div className="w-full card-premium bg-gradient-to-r from-[var(--bg-surface)] to-[var(--bg-elevated)] p-6 mb-8 fade-up fade-up-delay-1">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-6">
             <div className="flex-1 flex flex-col items-center">
-              <span className="text-red-400 font-semibold mb-3">WITHOUT AI Onboarding</span>
-              <div className="space-y-2 text-sm text-gray-300">
+              <span className="text-red-400 font-[var(--font-syne)] font-bold mb-3">WITHOUT AI Onboarding</span>
+              <div className="space-y-2 text-sm text-[var(--text-secondary)]">
                 <p className="flex items-center gap-2 justify-end"><X size={16} className="text-red-400"/> 40 modules</p>
                 <p className="flex items-center gap-2 justify-end"><X size={16} className="text-red-400"/> 400 hours</p>
                 <p className="flex items-center gap-2 justify-end"><X size={16} className="text-red-400"/> Generic for everyone</p>
               </div>
             </div>
             
-            <div className="bg-[#2E86AB] text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-lg flex-shrink-0 shadow-lg shadow-[#2E86AB]/30">
+            <div className="bg-gradient-to-br from-[#4F9EF8] to-[#7C3AED] text-white rounded-full w-12 h-12 flex items-center justify-center font-[var(--font-syne)] font-bold text-lg flex-shrink-0 shadow-lg shadow-[#4F9EF8]/30">
               VS
             </div>
 
             <div className="flex-1 flex flex-col items-center">
-              <span className="text-green-400 font-semibold mb-3">WITH AI Adaptive Onboarding</span>
-              <div className="space-y-2 text-sm text-gray-300">
-                <p className="flex items-center gap-2"><Check size={16} className="text-green-400"/> {data.pathway.total_courses} modules</p>
-                <p className="flex items-center gap-2"><Check size={16} className="text-green-400"/> {data.pathway.total_estimated_hours} hours</p>
-                <p className="flex items-center gap-2"><Check size={16} className="text-green-400"/> Personalized for YOU</p>
+              <span className="text-[#10B981] font-[var(--font-syne)] font-bold mb-3">WITH AI Adaptive Onboarding</span>
+              <div className="space-y-2 text-sm text-[var(--text-secondary)]">
+                <p className="flex items-center gap-2"><Check size={16} className="text-[#10B981]"/> {data.pathway.total_courses} modules</p>
+                <p className="flex items-center gap-2"><Check size={16} className="text-[#10B981]"/> {data.pathway.total_estimated_hours} hours</p>
+                <p className="flex items-center gap-2"><Check size={16} className="text-[#10B981]"/> Personalized for YOU</p>
               </div>
             </div>
           </div>
           
-          <div className="w-full bg-[#2E86AB]/10 rounded-xl p-3 mt-2 text-center border border-[#2E86AB]/20">
-            <p className="text-[#2E86AB] font-semibold">
+          <div className="w-full bg-[#4F9EF8]/10 rounded-xl p-3 mt-2 text-center border border-[#4F9EF8]/20">
+            <p className="text-[#4F9EF8] font-[var(--font-syne)] font-bold">
               🎉 You save approximately {savedModules > 0 ? savedModules : 0} modules and {savedHours > 0 ? savedHours : 0} hours compared to generic onboarding
             </p>
           </div>
@@ -266,46 +271,46 @@ function RoadmapContent() {
         )}
 
         {/* Stats Bar */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-          <div className="bg-[#1A2035] rounded-xl p-4 border border-gray-700/50 shadow-md">
-            <div className="flex items-center gap-2 mb-1 text-gray-400 text-xs">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10 fade-up fade-up-delay-2">
+          <div className="card-premium p-5">
+            <div className="flex items-center gap-2 mb-2 text-[var(--text-muted)] text-xs">
               <Book size={14} /> Total Courses
             </div>
-            <p className="text-2xl font-bold text-[#2E86AB] mb-1">{data.pathway.total_courses}</p>
-            <p className="text-[10px] text-gray-500 uppercase tracking-wider">in your pathway</p>
+            <p className="stat-number text-3xl text-[#4F9EF8] mb-1">{data.pathway.total_courses}</p>
+            <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">in your pathway</p>
           </div>
           
-          <div className="bg-[#1A2035] rounded-xl p-4 border border-gray-700/50 shadow-md">
-            <div className="flex items-center gap-2 mb-1 text-gray-400 text-xs">
+          <div className="card-premium p-5">
+            <div className="flex items-center gap-2 mb-2 text-[var(--text-muted)] text-xs">
               <Clock size={14} /> Total Hours
             </div>
-            <p className="text-2xl font-bold text-[#F18F01] mb-1">{data.pathway.total_estimated_hours}h</p>
-            <p className="text-[10px] text-gray-500 uppercase tracking-wider">estimated</p>
+            <p className="stat-number text-3xl text-[#F59E0B] mb-1">{data.pathway.total_estimated_hours}h</p>
+            <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">estimated</p>
           </div>
           
-          <div className="bg-[#1A2035] rounded-xl p-4 border border-gray-700/50 shadow-md">
-            <div className="flex items-center gap-2 mb-1 text-gray-400 text-xs">
+          <div className="card-premium p-5">
+            <div className="flex items-center gap-2 mb-2 text-[var(--text-muted)] text-xs">
               <Zap size={14} /> Courses Skipped
             </div>
-            <p className="text-2xl font-bold text-green-400 mb-1">{data.pathway.courses_skipped}</p>
-            <p className="text-[10px] text-gray-500 uppercase tracking-wider">already mastered</p>
+            <p className="stat-number text-3xl text-[#10B981] mb-1">{data.pathway.courses_skipped}</p>
+            <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">already mastered</p>
           </div>
           
-          <div className="bg-[#1A2035] rounded-xl p-4 border border-gray-700/50 shadow-md flex items-center justify-between relative overflow-hidden">
+          <div className="card-premium p-5 flex items-center justify-between relative overflow-hidden">
             <div>
-              <div className="flex items-center gap-2 text-gray-400 text-xs mb-3">
+              <div className="flex items-center gap-2 text-[var(--text-muted)] text-xs mb-3">
                 <Target size={14} /> Role Match
               </div>
               {isAboveAvg ? (
-                <span className="bg-green-500/10 border border-green-500/20 text-green-400 text-xs px-2 py-1 rounded-full flex items-center gap-1 w-max">
+                <span className="bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981] text-xs px-2 py-1 rounded-full flex items-center gap-1 w-max">
                   ↑ Above Avg
                 </span>
               ) : (
-                <span className="bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs px-2 py-1 rounded-full flex items-center gap-1 w-max">
+                <span className="bg-[#F59E0B]/10 border border-[#F59E0B]/20 text-[#F59E0B] text-xs px-2 py-1 rounded-full flex items-center gap-1 w-max">
                   ↓ Below Avg
                 </span>
               )}
-              <p className="text-[10px] text-gray-500 mt-2">vs 42% avg candidate</p>
+              <p className="text-[10px] text-[var(--text-muted)] mt-2">vs 42% avg candidate</p>
             </div>
             <div className="w-16 h-16 ml-auto">
               <MatchScoreRing score={matchPercent} size={64} />
@@ -314,19 +319,19 @@ function RoadmapContent() {
         </div>
 
         {/* View Toggles */}
-        <div className="flex gap-4 mb-6">
+        <div className="flex gap-4 mb-6 fade-up fade-up-delay-3">
           <button
             onClick={() => setViewMode("timeline")}
-            className={`px-4 py-2 text-sm rounded-lg border transition-all ${
-              viewMode === "timeline" ? "bg-[#2E86AB] text-white border-[#2E86AB]" : "bg-[#1A2035] text-gray-400 hover:text-white border-[#2E86AB]/30"
+            className={`px-4 py-2 text-sm rounded-2xl border transition-all ${
+              viewMode === "timeline" ? "bg-gradient-to-r from-[#4F9EF8] to-[#7C3AED] text-white border-transparent" : "card-premium text-[var(--text-secondary)] hover:text-white"
             }`}
           >
             Timeline View
           </button>
           <button
             onClick={() => setViewMode("weekly")}
-            className={`px-4 py-2 text-sm rounded-lg border transition-all ${
-              viewMode === "weekly" ? "bg-[#2E86AB] text-white border-[#2E86AB]" : "bg-[#1A2035] text-gray-400 hover:text-white border-[#2E86AB]/30"
+            className={`px-4 py-2 text-sm rounded-2xl border transition-all ${
+              viewMode === "weekly" ? "bg-gradient-to-r from-[#4F9EF8] to-[#7C3AED] text-white border-transparent" : "card-premium text-[var(--text-secondary)] hover:text-white"
             }`}
           >
             Weekly View
